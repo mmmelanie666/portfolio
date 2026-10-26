@@ -127,7 +127,7 @@ export const cases: CaseItem[] = [
 export const footerContent = {
   title: 'ВАШ ДИЗАЙНЕР МЕЛАНА',
   buttonText: 'заказать сайт',
-  telegramLink: 'https://t.me/vaniosovam',
+  telegramLink: 'https://t.me/melanchonie',
   socials: [
     { title: 'THREADS', link: 'https://www.threads.com/@melnchks?igshid=NTc4MTIwNjQ2YQ==' },
     { title: 'INSTAGRAM', link: 'https://www.instagram.com/melnchks' },
