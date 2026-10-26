@@ -37,7 +37,7 @@ export const Hero: React.FC = () => {
       className="relative min-h-[auto] min-[1200px]:min-h-screen flex flex-col overflow-x-clip bg-[#FEF9F4] mb-0"
       id="hero"
     >
-      <div className="w-full max-w-[1920px] mx-auto px-5 min-[744px]:max-[1023px]:!px-[25px] lg:max-[1399px]:!px-[50px] min-[1400px]:px-[80px] relative z-10 flex-1 flex flex-col justify-center pt-[90px] min-[744px]:pt-[125px] lg:pt-[135px] min-[1400px]:pt-[150px] pb-[30px] min-[744px]:pb-0">
+      <div className="w-full max-w-[1920px] mx-auto px-5 min-[744px]:max-[1023px]:!px-[25px] lg:max-[1399px]:!px-[50px] min-[1400px]:px-[80px] relative z-10 flex-1 flex flex-col justify-center pt-[95px] min-[744px]:pt-[125px] min-[1400px]:pt-[140px] pb-[60px] min-[744px]:pb-[90px] lg:pb-[120px] min-[1400px]:pb-[140px]">
         <div className="w-full flex-1 flex flex-col min-[744px]:flex-row justify-between items-center min-[744px]:items-start gap-[36px] min-[744px]:gap-[20px] min-[860px]:gap-[24px] lg:gap-[32px] min-[1400px]:gap-[40px] min-[744px]:max-[1199px]:my-0 min-[1200px]:my-auto">
           
           {/* ЛЕВАЯ КОЛОНКА: высота строго равна высоте фото (подпись сверху вровень с верхом фото, кнопка снизу строго вровень с низом фото) */}

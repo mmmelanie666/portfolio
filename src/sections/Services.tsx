@@ -7,7 +7,7 @@ export const Services: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section className="pt-[20px] min-[744px]:pt-[100px] lg:pt-[120px] min-[1400px]:pt-[150px] pb-[24px] min-[744px]:pb-0 lg:pb-[60px] min-[1400px]:pb-[75px] bg-[#FEF9F4] relative z-30" id="services">
+    <section className="pt-[60px] min-[744px]:pt-[90px] lg:pt-[120px] min-[1400px]:pt-[140px] pb-[60px] min-[744px]:pb-[90px] lg:pb-[120px] min-[1400px]:pb-[140px] bg-[#FEF9F4] relative z-30" id="services">
       {/* Фоновые декоративные элементы с блюром: плавно появляются поочередно перед контентом */}
       <div className="absolute inset-0 w-full max-w-[1920px] mx-auto pointer-events-none z-0 overflow-hidden transform-gpu translate-z-0">
         <motion.img
@@ -54,8 +54,8 @@ export const Services: React.FC = () => {
       </div>
 
       <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] relative z-10">
-        {/* Заголовок секции: слева на мобилке, справа на планшете и десктопе (появляется после блюров) */}
-        <div className="flex justify-start min-[744px]:justify-end mb-[20px] min-[744px]:mb-[45px] min-[1400px]:mb-[60px]">
+        {/* Заголовок секции: строго единый отступ снизу */}
+        <div className="flex justify-start min-[744px]:justify-end mb-[24px] min-[744px]:mb-[36px] min-[1400px]:mb-[48px]">
           <SectionTitle delay={0.35} className="text-left min-[744px]:text-right whitespace-nowrap">
             УСЛУГИ
           </SectionTitle>

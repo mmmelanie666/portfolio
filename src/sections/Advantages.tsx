@@ -91,13 +91,13 @@ export const Advantages: React.FC = () => {
     <div
       ref={scrollTriggerRef}
       id="advantages"
-      className="relative bg-[#FEF9F4] h-[130vh] min-[744px]:h-[220vh] min-[1400px]:h-[230vh]"
+      className="relative bg-[#FEF9F4] h-[220vh] min-[744px]:h-[250vh] min-[1400px]:h-[280vh]"
     >
-      {/* Пин-контейнер: увеличен отступ от хедера до заголовка */}
-      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center z-10 pt-[110px] min-[390px]:pt-[120px] pb-[16px] min-[744px]:pt-[140px] min-[744px]:pb-[40px] lg:pt-[150px] lg:pb-[40px] min-[1400px]:pt-[160px] overflow-x-clip">
+      {/* Пин-контейнер: строго единый отступ от фиксированного хедера */}
+      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center z-10 pt-[95px] min-[744px]:pt-[125px] min-[1400px]:pt-[140px] pb-[20px] min-[744px]:pb-[40px] overflow-x-clip">
         <section className="w-full overflow-x-clip">
-          {/* Заголовок: слева на мобилке (<744px), справа на планшете и десктопе (744px+) */}
-          <div className="w-full mb-[16px] min-[744px]:mb-[40px] min-[1400px]:mb-[52px]">
+          {/* Заголовок: строго единый отступ снизу */}
+          <div className="w-full mb-[24px] min-[744px]:mb-[36px] min-[1400px]:mb-[48px]">
             <div className="w-full max-w-[1920px] mx-auto px-5 min-[390px]:px-6 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] flex justify-start min-[744px]:justify-end">
               <SectionTitle className="text-left min-[744px]:text-right whitespace-nowrap">
                 МОИ ПРЕИМУЩЕСТВА
@@ -118,7 +118,7 @@ export const Advantages: React.FC = () => {
                   <motion.div
                     key={index}
                     style={{ opacity: cardAnim.opacity, y: cardAnim.y }}
-                    className="relative shrink-0 w-[78%] max-[743px]:aspect-[4/4.8] min-[744px]:max-[1023px]:w-[calc((100%-30px)/3)] lg:max-[1399px]:w-[calc((100%-30px)/4)] min-[1400px]:w-[calc((100%-96px)/4)] min-[1400px]:aspect-square flex flex-col justify-start items-start text-left will-change-[transform,opacity] transform-gpu bg-[#FA7250] p-[18px] min-[744px]:p-6 min-[1200px]:p-7 min-[1400px]:p-8 rounded-none"
+                    className="relative shrink-0 w-[78%] max-[743px]:aspect-[4/5.4] min-[744px]:max-[1023px]:w-[calc((100%-30px)/3)] lg:max-[1399px]:w-[calc((100%-30px)/4)] min-[1400px]:w-[calc((100%-96px)/4)] min-[1400px]:aspect-square flex flex-col justify-start items-start text-left will-change-[transform,opacity] transform-gpu bg-[#FA7250] p-[18px] min-[744px]:p-6 min-[1200px]:p-7 min-[1400px]:p-8 rounded-none"
                   >
                     {/* Иконка преимущества */}
                     <div className="relative z-10 h-[95px] min-[390px]:h-[105px] min-[744px]:h-[100px] lg:h-[125px] min-[1400px]:h-[160px] mb-[16px] min-[744px]:mb-[26px] min-[1400px]:mb-[36px] w-full flex items-center justify-center shrink-0">

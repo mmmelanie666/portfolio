@@ -47,13 +47,13 @@ export const Process: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="bg-[#FEF9F4] relative z-20 h-[130vh] min-[744px]:h-[220vh] min-[1400px]:h-[240vh]"
+      className="bg-[#FEF9F4] relative z-20 h-[220vh] min-[744px]:h-[250vh] min-[1400px]:h-[280vh]"
       id="process"
     >
-      {/* Пин-контейнер: увеличен отступ от хедера до заголовка */}
-      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center overflow-x-clip z-10 pt-[110px] min-[390px]:pt-[120px] pb-[16px] min-[744px]:pt-[140px] min-[744px]:pb-[40px] lg:pt-[150px] lg:pb-[40px] min-[1400px]:pt-[160px]">
-        {/* Заголовок: на 390px слева, на 744px+ справа */}
-        <div className="w-full mb-[16px] min-[744px]:mb-[32px] min-[1400px]:mb-[44px]">
+      {/* Пин-контейнер: строго единый отступ от фиксированного хедера */}
+      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center overflow-x-clip z-10 pt-[95px] min-[744px]:pt-[125px] min-[1400px]:pt-[140px] pb-[20px] min-[744px]:pb-[40px]">
+        {/* Заголовок: строго единый отступ снизу */}
+        <div className="w-full mb-[24px] min-[744px]:mb-[36px] min-[1400px]:mb-[48px]">
           <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] flex justify-start min-[744px]:justify-end">
             <SectionTitle delay={0.1} className="text-left min-[744px]:text-right whitespace-nowrap">
               ЭТАПЫ РАБОТЫ
