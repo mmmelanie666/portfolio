@@ -1,26 +1,27 @@
 # Design System
 
 ## 1. Colors
-*Values are estimated and should be replaced with actual tokens once design files are inspected.*
+*Values have been extracted from Figma design files.*
 
-- `--color-bg`: `#FAFAFA` (Base background)
+- `--color-bg`: `#FEF9F4` (Base background)
 - `--color-text-primary`: `#1A1A1A` (Headings, primary text)
 - `--color-text-secondary`: `#4A4A4A` (Body text, less important text)
-- `--color-primary`: `#FF6B4A` (Brand accent, buttons, some H2s)
-- `--color-primary-hover`: `#FF502B`
+- `--color-primary`: `#FA7250` (Brand accent, buttons, some H2s)
+- `--color-primary-hover`: `#EB4F2E`
 - `--color-surface`: `rgba(255, 255, 255, 0.7)` (For translucent cards/header, if needed)
 
 ## 2. Typography
 *Using logical variables for fluid typography.*
 
-- `--font-sans`: `'Inter', 'Montserrat', sans-serif`
-- `--text-h1`: `clamp(2.5rem, 6vw, 6rem)` / `1.1` line-height / `700` weight
-- `--text-h2`: `clamp(1.75rem, 4vw, 3rem)` / `1.2` line-height / `600` weight
-- `--text-h3`: `clamp(1.25rem, 2vw, 1.5rem)` / `1.3` line-height / `600` weight
-- `--text-body`: `1.125rem` / `1.6` line-height / `400` weight
-- `--text-small`: `0.875rem` / `1.5` line-height / `400` weight
+- `--font-sans`: `'Montserrat', sans-serif`
+- **Body Text**: MUST be `Regular` (`font-weight: 400`). Do not use medium or bold for standard description text.
+- **Desktop Sizing**: Base font sizes on screens >= 1400px should be slightly smaller/tighter to maintain editorial elegance.
 
-## 3. Spacing
+## 3. Strict Rules (Anti-patterns)
+- **NO SHADOWS** on overlays, cards, or tooltips. The design relies on flat colors, gradients, and borders.
+- **NO ROUNDED CORNERS (border-radius)** on UI cards like the Services tooltip. Use sharp, brutalist corners (`rounded-none`).
+
+## 4. Spacing
 *Using a base-4/base-8 spacing scale.*
 
 - `--space-1`: `4px`

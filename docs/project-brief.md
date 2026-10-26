@@ -24,7 +24,7 @@ This project is a single-page portfolio website for **Мелания Ванио�
 4. **Advantages (Мои преимущества)**: Key selling points (Neural Networks, Experience, Flexibility).
 5. **Services**: Large typography listing services (Multi-page site, Landing, Online Store, Branding).
 6. **Portfolio / Cases (Кейсы)**: Showcase of past projects.
-7. **Footer / Final CTA**: A strong prompt to order a website.
+7. **Footer / Final CTA**: A strong prompt to order a website. (e.g. "ЗАКАЖИ САЙТ СЕЙЧАС").
 
 ## Key Messages
 - "Проектирую сайты для бизнеса с продуманной структурой и крутым визуалом" (I design websites for business with thoughtful structure and cool visuals).

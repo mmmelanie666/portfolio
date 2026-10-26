@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", sans-serif;
+}
+
+html,
+body,
+.font-sans {
+  scroll-behavior: smooth;
+  font-family: "Manrope", sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+  /* Плашка Многостраничный сайт: ровно 40px от слова */
+  .service-tooltip-0 {
+    margin-top: 40px !important;
+    left: 0 !important;
+  }
+  
+  /* Плашка Лендинг: ровно 50px от правой границы экрана */
+  .service-tooltip-1 {
+    left: calc(50% + 50vw - 490px) !important;
+  }
+  
+  /* Плашки Интернет-магазин и Брендинг: уменьшены на 50px (до 390px) */
+  .service-tooltip-2,
+  .service-tooltip-3 {
+    width: 390px !important;
+  }
+  
+  /* stages-2 на 1024-1399px: колонка 6, ряд 1 */
+  .stage-2-pin {
+    grid-column: 6 / span 2 !important;
+    grid-row: 1 !important;
+    height: 100% !important;
+    display: block !important;
+  }
+
+  /* stages-5 на 1024-1399px: колонка 5 (слева от колонки 6 ВЕРСТКА), сдвинут вправо на 1/3 ширины самого элемента */
+  .stage-5-pin {
+    grid-column: 5 / span 1 !important;
+    grid-row: 4 !important;
+    display: block !important;
+  }
+  .stage-5-img {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    transform: translateX(calc(100% / 3 - 10px)) !important;
+    width: 220px !important;
+    height: 190px !important;
+    max-width: none !important;
+  }
+}
+
+/* Адаптив 744px (планшет): 6 колонок, margin 25px, gutter 15px */
+@media (min-width: 744px) and (max-width: 1023px) {
+  /* Марджин 25px от краев экрана строго для контейнеров первого уровня (не для вложенных карточек) */
+  .adaptive-container-744,
+  #hero > .relative.z-10,
+  #process > .relative.z-10,
+  #process .flex.justify-end,
+  #advantages > .relative.z-10,
+  #advantages .flex.justify-end,
+  #services > .relative.z-10,
+  #cases > .relative.z-10,
+  footer > .relative.z-10 {
+    padding-left: 25px !important;
+    padding-right: 25px !important;
+  }
+
+  /* Сетка на 744px: 6 колонок, гуттер 15px */
+  .grid-744-6col {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    column-gap: 15px !important;
+    row-gap: 24px !important;
+  }
+
+  /* Размещение этапов в 6 колонках по 2 колонки на карточку */
+  .step-card-0 {
+    grid-column: 1 / span 2 !important;
+    grid-row: 1 !important;
+  }
+  .step-card-1 {
+    grid-column: 5 / span 2 !important;
+    grid-row: 1 !important;
+  }
+  .step-card-2 {
+    grid-column: 3 / span 2 !important;
+    grid-row: 2 !important;
+  }
+  .step-card-3 {
+    grid-column: 3 / span 2 !important;
+    grid-row: 3 !important;
+  }
+  .step-card-4 {
+    grid-column: 5 / span 2 !important;
+    grid-row: 4 !important;
+  }
+  .stage-4-pin {
+    grid-column: 1 / span 2 !important;
+    grid-row: 4 !important;
+    display: block !important;
+  }
+
+  /* stages-2 на 744-1023px: колонка 5, ряд 1 */
+  .stage-2-pin {
+    grid-column: 5 / span 2 !important;
+    grid-row: 1 !important;
+    height: 100% !important;
+    display: block !important;
+  }
+
+  /* stages-5 на 744-1023px: колонка 4 (слева от колонки 5 ВЕРСТКА), сдвинут вправо на 1/3 ширины самого элемента */
+  .stage-5-pin {
+    grid-column: 4 / span 1 !important;
+    grid-row: 4 !important;
+    display: block !important;
+  }
+  .stage-5-img {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    transform: translateX(calc(100% / 3 - 10px)) !important;
+    width: 220px !important;
+    height: 190px !important;
+    max-width: none !important;
+  }
+
+  /* Выравнивание карточек Интернет-магазин и Брендинг по той же направляющей, что Дизайн-концепция в блоке Этапы (колонка 3) */
+  .service-indent-stepped {
+    padding-left: calc((100% - 75px) * 2 / 6 + 30px) !important;
+  }
+}
+
+.stage-2-img {
+  position: absolute;
+  left: 110px;
+  top: calc(100% - 115px);
+  width: 260px;
+  height: 110px;
+  transform-origin: top left;
+  transform: rotate(90deg);
+  max-width: none;
+}
+
+@media (max-width: 743px) {
+  .stage-2-img {
+    position: absolute !important;
+    left: 72px !important;
+    top: -120px !important;
+    width: 170px !important;
+    height: 72px !important;
+    transform-origin: top left !important;
+    transform: rotate(90deg) !important;
+    max-width: none !important;
+  }
+
+  .stage-5-img {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    transform: translateX(calc(100% / 3 - 6px)) !important;
+    width: 145px !important;
+    height: 125px !important;
+    max-width: none !important;
+  }
+
+  /* Выравнивание карточек Интернет-магазин и Брендинг строго по той же направляющей, что Дизайн-концепция в блоке Этапы (60px) */
+  .service-indent-stepped {
+    padding-left: 60px !important;
+  }
+
+  /* Горизонтальная лента Преимуществ на мобилке: отступ в начальной позиции, при скролле уходит за края */
+  .advantages-mobile-track {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 20px;
+    scroll-padding-right: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .advantages-mobile-track::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (min-width: 390px) and (max-width: 743px) {
+  .advantages-mobile-track {
+    scroll-padding-left: 24px;
+    scroll-padding-right: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .stage-2-pin {
+    grid-column: 5 / span 2 !important;
+    grid-row: 1 !important;
+    height: 100% !important;
+    display: block !important;
+  }
+
+  /* stages-5 на 1400px+: колонка 4 (слева от колонки 5 ВЕРСТКА), сдвинут вправо на 1/3 ширины самого элемента */
+  .stage-5-pin {
+    grid-column: 4 / span 1 !important;
+    grid-row: 4 !important;
+    display: block !important;
+  }
+  .stage-5-img {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    transform: translateX(calc(100% / 3 - 10px)) !important;
+    width: 250px !important;
+    height: 215px !important;
+    max-width: none !important;
+  }
+}

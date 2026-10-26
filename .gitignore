@@ -1,6 +1,32 @@
+# Local reference mockups and scratch
+/Desktop - 102.png
+/main page2.png
+/итог2.png
+/case-5-no-bg.png
+/scratch/
+.agents/skills/designmd-supply
+.agents/**/*.mp4
+
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-node_modules/
-.env
-.env.local
-dist/
-build/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

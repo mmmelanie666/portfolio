@@ -13,7 +13,7 @@
   --color-coral-200: #FFC4B5;
   --color-coral-300: #FFA28C;
   --color-coral-400: #FF7B5E;
-  --color-coral-500: #FF6B4A; /* Brand Base */
+  --color-coral-500: #FA7250; /* Brand Base */
   --color-coral-600: #EB4F2E;
   --color-coral-700: #C23A1B;
   --color-coral-800: #A03118;
@@ -71,7 +71,7 @@
   ========================================== */
 :root {
   /* Global Background & Foreground */
-  --color-bg: var(--color-slate-50);
+  --color-bg: #FEF9F4;
   --color-foreground: var(--color-slate-900);
   
   /* Primary Action */
