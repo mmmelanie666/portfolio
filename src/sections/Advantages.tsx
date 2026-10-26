@@ -91,13 +91,13 @@ export const Advantages: React.FC = () => {
     <div
       ref={scrollTriggerRef}
       id="advantages"
-      className="relative bg-[#FEF9F4] h-[260vh] min-[744px]:h-[220vh] min-[1400px]:h-[230vh]"
+      className="relative bg-[#FEF9F4] h-[180vh] min-[744px]:h-[220vh] min-[1400px]:h-[230vh]"
     >
-      {/* Пин-контейнер: выровнен по вертикальному центру экрана (justify-center), чтобы снизу не было пустого места */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center z-10 pt-[70px] pb-[30px] min-[744px]:pt-[85px] min-[744px]:pb-[40px] lg:pt-[90px] lg:pb-[40px] overflow-x-clip">
+      {/* Пин-контейнер: центрирован на планшете/десктопе, компактнее на мобилке */}
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center z-10 pt-[55px] pb-[20px] min-[744px]:pt-[85px] min-[744px]:pb-[40px] lg:pt-[90px] lg:pb-[40px] overflow-x-clip">
         <section className="w-full overflow-x-clip">
           {/* Заголовок: слева на мобилке (<744px), справа на планшете и десктопе (744px+) */}
-          <div className="w-full mb-[24px] min-[744px]:mb-[40px] min-[1400px]:mb-[52px]">
+          <div className="w-full mb-[16px] min-[744px]:mb-[40px] min-[1400px]:mb-[52px]">
             <div className="w-full max-w-[1920px] mx-auto px-5 min-[390px]:px-6 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] flex justify-start min-[744px]:justify-end">
               <SectionTitle className="text-left min-[744px]:text-right whitespace-nowrap">
                 МОИ ПРЕИМУЩЕСТВА

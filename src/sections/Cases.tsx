@@ -25,7 +25,7 @@ export const Cases: React.FC = () => {
   }, [selectedCase]);
 
   return (
-    <section className="pt-[80px] min-[744px]:pt-[100px] lg:pt-[120px] min-[1400px]:pt-[150px] pb-[108px] min-[744px]:pb-[145px] lg:pb-[230px] min-[1400px]:pb-[300px] bg-[#FEF9F4] relative z-30 overflow-x-clip overflow-y-visible" id="cases">
+    <section className="pt-[40px] min-[744px]:pt-[100px] lg:pt-[120px] min-[1400px]:pt-[150px] pb-[50px] min-[744px]:pb-[145px] lg:pb-[230px] min-[1400px]:pb-[300px] bg-[#FEF9F4] relative z-20 overflow-x-clip overflow-y-visible" id="cases">
       {/* Верхний блюр-элемент: плавно появляется первым */}
       <div className="absolute inset-x-0 top-0 w-full max-w-[1920px] mx-auto pointer-events-none z-0 overflow-visible transform-gpu translate-z-0">
         <motion.img
@@ -43,7 +43,7 @@ export const Cases: React.FC = () => {
       <div className="w-full max-w-[1920px] mx-auto px-5 min-[600px]:px-[25px] lg:max-[1399px]:!px-[50px] min-[1400px]:px-[60px] relative z-10">
         
         {/* Заголовок: на 390px слева, на 744px+ справа (появляется после блюра) */}
-        <div className="flex justify-start min-[744px]:justify-end mb-[30px] min-[744px]:mb-[45px] min-[1400px]:mb-[60px]">
+        <div className="flex justify-start min-[744px]:justify-end mb-[20px] min-[744px]:mb-[45px] min-[1400px]:mb-[60px]">
           <SectionTitle delay={0.25} className="text-left min-[744px]:text-right whitespace-nowrap">
             КЕЙСЫ
           </SectionTitle>

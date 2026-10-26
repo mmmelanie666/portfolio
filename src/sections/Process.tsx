@@ -47,13 +47,13 @@ export const Process: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="bg-[#FEF9F4] relative z-20 h-[240vh] min-[1400px]:h-[250vh]"
+      className="bg-[#FEF9F4] relative z-20 h-[180vh] min-[744px]:h-[220vh] min-[1400px]:h-[240vh]"
       id="process"
     >
-      {/* Пин-контейнер: центрирован по высоте экрана (h-screen justify-center), чтобы контент всегда полностью помещался и не обрезался */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-x-clip z-10 pt-[60px] pb-[30px] min-[744px]:pt-[75px] min-[744px]:pb-[40px] lg:pt-[80px] lg:pb-[40px]">
+      {/* Пин-контейнер: центрирован по высоте экрана, компактные отступы на мобилке */}
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-x-clip z-10 pt-[55px] pb-[20px] min-[744px]:pt-[75px] min-[744px]:pb-[40px] lg:pt-[80px] lg:pb-[40px]">
         {/* Заголовок: на 390px слева, на 744px+ справа */}
-        <div className="w-full mb-[20px] min-[744px]:mb-[32px] min-[1400px]:mb-[44px]">
+        <div className="w-full mb-[16px] min-[744px]:mb-[32px] min-[1400px]:mb-[44px]">
           <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] flex justify-start min-[744px]:justify-end">
             <SectionTitle delay={0.1} className="text-left min-[744px]:text-right whitespace-nowrap">
               ЭТАПЫ РАБОТЫ
