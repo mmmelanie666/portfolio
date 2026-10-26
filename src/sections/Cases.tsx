@@ -49,8 +49,8 @@ export const Cases: React.FC = () => {
           </SectionTitle>
         </div>
         
-        {/* Сетка: ровно по 2 кейса в строку на всех разрешениях без ступеньки */}
-        <div className="grid grid-cols-2 gap-x-[10px] min-[600px]:gap-x-[15px] lg:gap-x-[40px] min-[1400px]:gap-x-[60px] gap-y-[24px] min-[744px]:gap-y-[36px] lg:gap-y-[60px] items-start">
+        {/* Сетка: ровно по 2 кейса в строку на всех разрешениях, вертикальный gap равен горизонтальному */}
+        <div className="grid grid-cols-2 gap-[10px] min-[600px]:gap-[15px] lg:gap-[40px] min-[1400px]:gap-[60px] items-start">
           {cases.map((project, index) => {
             const isPlaceholderLink = !project.link || project.link === '#';
             const cardDelay = index < 2 ? 0.3 + (index % 2) * 0.15 : (index % 2) * 0.15;
@@ -111,7 +111,7 @@ export const Cases: React.FC = () => {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-[850px] max-h-[90vh] bg-[#FEF9F4] rounded-2xl flex flex-col overflow-hidden shadow-2xl cursor-default"
+              className="relative w-full max-w-[850px] max-h-[90vh] bg-[#FEF9F4] rounded-2xl flex flex-col overflow-hidden border border-[#FA7250]/20 cursor-default"
             >
               {/* Шапка модального окна */}
               <div className="px-5 py-4 border-b border-[#FA7250]/20 flex items-center justify-between shrink-0 bg-[#FEF9F4]/90 backdrop-blur-sm">
@@ -147,7 +147,7 @@ export const Cases: React.FC = () => {
                 <img
                   src={selectedCase.fullImage}
                   alt={selectedCase.title}
-                  className="w-full h-auto object-contain mx-auto rounded-lg shadow-sm"
+                  className="w-full h-auto object-contain mx-auto rounded-lg"
                 />
               </div>
             </div>

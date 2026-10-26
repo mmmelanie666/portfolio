@@ -72,11 +72,11 @@ body,
     padding-right: 25px !important;
   }
 
-  /* Сетка на 744px: 6 колонок, гуттер 15px */
+  /* Сетка на 744px: 6 колонок, гуттер 15px, row-gap 64px как в блоке Услуги */
   .grid-744-6col {
     grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
     column-gap: 15px !important;
-    row-gap: 24px !important;
+    row-gap: 64px !important;
   }
 
   /* Размещение этапов в 6 колонках по 2 колонки на карточку */

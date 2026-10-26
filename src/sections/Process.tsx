@@ -50,8 +50,8 @@ export const Process: React.FC = () => {
       className="bg-[#FEF9F4] relative z-20 h-[130vh] min-[744px]:h-[220vh] min-[1400px]:h-[240vh]"
       id="process"
     >
-      {/* Пин-контейнер: на мобилке прижат кверху (pt-[65px] под шапку), на десктопе центрирован (h-screen justify-center) */}
-      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center overflow-x-clip z-10 pt-[65px] pb-[16px] min-[744px]:pt-[75px] min-[744px]:pb-[40px] lg:pt-[80px] lg:pb-[40px]">
+      {/* Пин-контейнер: увеличен отступ от хедера до заголовка */}
+      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center overflow-x-clip z-10 pt-[110px] min-[390px]:pt-[120px] pb-[16px] min-[744px]:pt-[140px] min-[744px]:pb-[40px] lg:pt-[150px] lg:pb-[40px] min-[1400px]:pt-[160px]">
         {/* Заголовок: на 390px слева, на 744px+ справа */}
         <div className="w-full mb-[16px] min-[744px]:mb-[32px] min-[1400px]:mb-[44px]">
           <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] flex justify-start min-[744px]:justify-end">
@@ -125,7 +125,7 @@ export const Process: React.FC = () => {
         </div>
 
         <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] relative z-10">
-          <div className="w-full grid grid-cols-1 md:grid-cols-9 lg:max-[1399px]:grid-cols-8 gap-x-4 md:gap-x-8 lg:max-[1399px]:gap-x-[10px] gap-y-[14px] min-[390px]:gap-y-[18px] md:gap-y-6 lg:max-[1399px]:gap-y-6 min-[1400px]:gap-y-8 relative z-20 mt-0 grid-744-6col">
+          <div className="w-full grid grid-cols-1 md:grid-cols-9 lg:max-[1399px]:grid-cols-8 gap-x-4 md:gap-x-8 lg:max-[1399px]:gap-x-[10px] gap-y-[28px] min-[744px]:gap-y-16 lg:max-[1399px]:gap-y-16 min-[1400px]:gap-y-16 relative z-20 mt-0 grid-744-6col">
             {/* stages-4: нижняя плашка слева */}
             <motion.div
               initial={{ opacity: 0, scale: 0.85 }}

@@ -82,7 +82,7 @@ export const Header: React.FC = () => {
             href={footerContent.telegramLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="h-[44px] min-[744px]:h-[48px] inline-flex items-center justify-center px-[24px] min-[744px]:px-[32px] font-bold text-[14px] min-[744px]:text-[16px] leading-[1.07] transition-all hover:bg-[#EB4F2E] bg-[#FA7250] text-[#FEF9F4] whitespace-nowrap rounded-none shadow-sm"
+            className="h-[44px] min-[744px]:h-[48px] inline-flex items-center justify-center px-[24px] min-[744px]:px-[32px] font-bold text-[14px] min-[744px]:text-[16px] leading-[1.07] transition-all hover:bg-[#EB4F2E] bg-[#FA7250] text-[#FEF9F4] whitespace-nowrap rounded-none"
           >
             заказать сайт
           </a>
