@@ -7,7 +7,7 @@ export const Services: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section className="pt-[60px] min-[744px]:pt-[90px] lg:pt-[120px] min-[1400px]:pt-[140px] pb-[60px] min-[744px]:pb-[90px] lg:pb-[120px] min-[1400px]:pb-[140px] bg-[#FEF9F4] relative z-30" id="services">
+    <section className="pt-[70px] min-[744px]:pt-[100px] lg:pt-[120px] min-[1400px]:pt-[140px] pb-0 bg-[#FEF9F4] relative z-30" id="services">
       {/* Фоновые декоративные элементы с блюром: плавно появляются поочередно перед контентом */}
       <div className="absolute inset-0 w-full max-w-[1920px] mx-auto pointer-events-none z-0 overflow-hidden transform-gpu translate-z-0">
         <motion.img

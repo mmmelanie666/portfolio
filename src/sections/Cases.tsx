@@ -25,7 +25,7 @@ export const Cases: React.FC = () => {
   }, [selectedCase]);
 
   return (
-    <section className="pt-[60px] min-[744px]:pt-[90px] lg:pt-[120px] min-[1400px]:pt-[140px] pb-[60px] min-[744px]:pb-[90px] lg:pb-[120px] min-[1400px]:pb-[140px] bg-[#FEF9F4] relative z-20 overflow-x-clip overflow-y-visible" id="cases">
+    <section className="pt-[70px] min-[744px]:pt-[100px] lg:pt-[120px] min-[1400px]:pt-[140px] pb-[60px] min-[744px]:pb-[90px] lg:pb-[120px] min-[1400px]:pb-[140px] bg-[#FEF9F4] relative z-20 overflow-x-clip overflow-y-visible" id="cases">
       {/* Верхний блюр-элемент: плавно появляется первым */}
       <div className="absolute inset-x-0 top-0 w-full max-w-[1920px] mx-auto pointer-events-none z-0 overflow-visible transform-gpu translate-z-0">
         <motion.img

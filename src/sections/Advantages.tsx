@@ -94,7 +94,7 @@ export const Advantages: React.FC = () => {
       className="relative bg-[#FEF9F4] h-[220vh] min-[744px]:h-[250vh] min-[1400px]:h-[280vh]"
     >
       {/* Пин-контейнер: строго единый отступ от фиксированного хедера */}
-      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center z-10 pt-[95px] min-[744px]:pt-[125px] min-[1400px]:pt-[140px] pb-[20px] min-[744px]:pb-[40px] overflow-x-clip">
+      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center z-10 pt-[85px] min-[744px]:pt-[110px] min-[1400px]:pt-[130px] pb-[20px] min-[744px]:pb-[40px] overflow-x-clip">
         <section className="w-full overflow-x-clip">
           {/* Заголовок: строго единый отступ снизу */}
           <div className="w-full mb-[24px] min-[744px]:mb-[36px] min-[1400px]:mb-[48px]">
@@ -120,8 +120,8 @@ export const Advantages: React.FC = () => {
                     style={{ opacity: cardAnim.opacity, y: cardAnim.y }}
                     className="relative shrink-0 w-[78%] max-[743px]:aspect-[4/5.4] min-[744px]:max-[1023px]:w-[calc((100%-30px)/3)] lg:max-[1399px]:w-[calc((100%-30px)/4)] min-[1400px]:w-[calc((100%-96px)/4)] min-[1400px]:aspect-square flex flex-col justify-start items-start text-left will-change-[transform,opacity] transform-gpu bg-[#FA7250] p-[18px] min-[744px]:p-6 min-[1200px]:p-7 min-[1400px]:p-8 rounded-none"
                   >
-                    {/* Иконка преимущества */}
-                    <div className="relative z-10 h-[95px] min-[390px]:h-[105px] min-[744px]:h-[100px] lg:h-[125px] min-[1400px]:h-[160px] mb-[16px] min-[744px]:mb-[26px] min-[1400px]:mb-[36px] w-full flex items-center justify-center shrink-0">
+                    {/* Иконка преимущества: увеличена в размере без изменения высоты карточки */}
+                    <div className="relative z-10 h-[145px] min-[390px]:h-[165px] min-[744px]:h-[125px] lg:h-[140px] min-[1400px]:h-[150px] min-[1600px]:h-[185px] mb-[12px] min-[744px]:mb-[16px] min-[1400px]:mb-[20px] w-full flex items-center justify-center shrink-0">
                       <motion.img
                         style={{ scale: imgScale }}
                         src={adv.icon}
