@@ -1,33 +1,40 @@
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { processSteps } from '@/data/content';
 import { SectionTitle, CardTitle, BodyText } from '@/components/ui/Typography';
 
 export const Process: React.FC = () => {
   const containerRef = useRef<HTMLElement>(null);
 
-  // Отслеживаем прохождение секции при естественном скролле страницы,
-  // чтобы этапы плавно появлялись один за другим, но блок никогда не обрезался по высоте экрана и на него не наезжали Кейсы
+  // Фиксированный скролл этапов: секция залипает на экране, и шаги поочередно появляются по скроллу
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start 75%', 'end 75%'],
+    offset: ['start start', 'end end'],
+  });
+
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 65,
+    damping: 22,
+    mass: 0.45,
+    restDelta: 0.0005,
   });
 
   // 5 этапов анимации, привязанных к проценту скролла:
-  const opacity0 = useTransform(scrollYProgress, [0.00, 0.22], [0, 1]);
-  const y0 = useTransform(scrollYProgress, [0.00, 0.22], [45, 0]);
+  // Последний этап (Верстка) полностью появляется к 0.70, оставляя 30% запаса скролла для комфортного чтения перед откреплением
+  const opacity0 = useTransform(smoothProgress, [0.00, 0.14], [0, 1]);
+  const y0 = useTransform(smoothProgress, [0.00, 0.14], [35, 0]);
 
-  const opacity1 = useTransform(scrollYProgress, [0.16, 0.38], [0, 1]);
-  const y1 = useTransform(scrollYProgress, [0.16, 0.38], [45, 0]);
+  const opacity1 = useTransform(smoothProgress, [0.12, 0.28], [0, 1]);
+  const y1 = useTransform(smoothProgress, [0.12, 0.28], [35, 0]);
 
-  const opacity2 = useTransform(scrollYProgress, [0.32, 0.54], [0, 1]);
-  const y2 = useTransform(scrollYProgress, [0.32, 0.54], [45, 0]);
+  const opacity2 = useTransform(smoothProgress, [0.26, 0.42], [0, 1]);
+  const y2 = useTransform(smoothProgress, [0.26, 0.42], [35, 0]);
 
-  const opacity3 = useTransform(scrollYProgress, [0.48, 0.70], [0, 1]);
-  const y3 = useTransform(scrollYProgress, [0.48, 0.70], [45, 0]);
+  const opacity3 = useTransform(smoothProgress, [0.40, 0.56], [0, 1]);
+  const y3 = useTransform(smoothProgress, [0.40, 0.56], [35, 0]);
 
-  const opacity4 = useTransform(scrollYProgress, [0.64, 0.86], [0, 1]);
-  const y4 = useTransform(scrollYProgress, [0.64, 0.86], [45, 0]);
+  const opacity4 = useTransform(smoothProgress, [0.54, 0.70], [0, 1]);
+  const y4 = useTransform(smoothProgress, [0.54, 0.70], [35, 0]);
 
   const stepAnimations = [
     { opacity: opacity0, y: y0 },
@@ -40,14 +47,15 @@ export const Process: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="bg-[#FEF9F4] relative z-20 pt-[80px] min-[744px]:pt-[100px] lg:pt-[100px] min-[1400px]:pt-[120px] pb-[40px] min-[744px]:pb-[60px] lg:pb-[80px] min-[1400px]:pb-[100px] overflow-x-clip"
+      className="bg-[#FEF9F4] relative z-20 h-[240vh] min-[1400px]:h-[250vh]"
       id="process"
     >
-      <div className="relative w-full flex flex-col justify-start">
+      {/* Пин-контейнер: центрирован по высоте экрана (h-screen justify-center), чтобы контент всегда полностью помещался и не обрезался */}
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-x-clip z-10 pt-[60px] pb-[30px] min-[744px]:pt-[75px] min-[744px]:pb-[40px] lg:pt-[80px] lg:pb-[40px]">
         {/* Заголовок: на 390px слева, на 744px+ справа */}
-        <div className="static left-0 w-full z-30 mb-[30px] min-[744px]:mb-[45px] min-[1400px]:mb-[60px] pointer-events-auto">
+        <div className="w-full mb-[20px] min-[744px]:mb-[32px] min-[1400px]:mb-[44px]">
           <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] flex justify-start min-[744px]:justify-end">
-            <SectionTitle delay={0.15} className="text-left min-[744px]:text-right whitespace-nowrap">
+            <SectionTitle delay={0.1} className="text-left min-[744px]:text-right whitespace-nowrap">
               ЭТАПЫ РАБОТЫ
             </SectionTitle>
           </div>
@@ -64,7 +72,7 @@ export const Process: React.FC = () => {
               src="/stages/stages-1.svg"
               alt=""
               decoding="async"
-              style={{ position: 'absolute', left: '0px', top: '140px', width: '330px', height: '300px', transform: 'rotate(180deg)' }}
+              style={{ position: 'absolute', left: '0px', top: '100px', width: '330px', height: '300px', transform: 'rotate(180deg)' }}
             />
             <motion.img
               initial={{ opacity: 0, scale: 0.85 }}
@@ -74,7 +82,7 @@ export const Process: React.FC = () => {
               src="/stages/stages-3.svg"
               alt=""
               decoding="async"
-              style={{ position: 'absolute', right: '0px', top: '180px', width: '420px', height: '420px', transform: 'scale(1.5)' }}
+              style={{ position: 'absolute', right: '0px', top: '140px', width: '420px', height: '420px', transform: 'scale(1.4)' }}
             />
             <motion.img
               initial={{ opacity: 0, scale: 0.85 }}
@@ -84,7 +92,7 @@ export const Process: React.FC = () => {
               src="/stages/stages-4.svg"
               alt=""
               decoding="async"
-              style={{ position: 'absolute', left: '0px', bottom: '0px', width: '203px', height: '147px', transform: 'rotate(0deg)' }}
+              style={{ position: 'absolute', left: '0px', bottom: '20px', width: '203px', height: '147px', transform: 'rotate(0deg)' }}
             />
           </div>
         </div>
@@ -100,7 +108,7 @@ export const Process: React.FC = () => {
               src="/stages/stages-1.svg"
               alt=""
               decoding="async"
-              className="absolute -left-[55px] min-[744px]:-left-[70px] top-[190px] min-[744px]:top-[260px] w-[200px] h-[180px] min-[744px]:w-[300px] min-[744px]:h-[270px] rotate-180"
+              className="absolute -left-[55px] min-[744px]:-left-[70px] top-[140px] min-[744px]:top-[180px] w-[180px] h-[160px] min-[744px]:w-[260px] min-[744px]:h-[230px] rotate-180"
             />
 
             <motion.img
@@ -111,13 +119,13 @@ export const Process: React.FC = () => {
               src="/stages/stages-3.svg"
               alt=""
               decoding="async"
-              className="absolute -right-[160px] min-[744px]:-right-[240px] top-[90px] min-[744px]:top-[100px] w-[360px] h-[360px] min-[744px]:w-[540px] min-[744px]:h-[540px]"
+              className="absolute -right-[140px] min-[744px]:-right-[200px] top-[70px] min-[744px]:top-[80px] w-[320px] h-[320px] min-[744px]:w-[460px] min-[744px]:h-[460px]"
             />
           </div>
         </div>
 
         <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] relative z-10">
-          <div className="w-full grid grid-cols-1 md:grid-cols-9 lg:max-[1399px]:grid-cols-8 gap-x-4 md:gap-x-8 lg:max-[1399px]:gap-x-[10px] gap-y-[28px] md:gap-y-12 lg:max-[1399px]:gap-y-7 relative z-20 mt-0 grid-744-6col">
+          <div className="w-full grid grid-cols-1 md:grid-cols-9 lg:max-[1399px]:grid-cols-8 gap-x-4 md:gap-x-8 lg:max-[1399px]:gap-x-[10px] gap-y-[14px] min-[390px]:gap-y-[18px] md:gap-y-6 lg:max-[1399px]:gap-y-6 min-[1400px]:gap-y-8 relative z-20 mt-0 grid-744-6col">
             {/* stages-4: нижняя плашка слева */}
             <motion.div
               initial={{ opacity: 0, scale: 0.85 }}
@@ -187,7 +195,7 @@ export const Process: React.FC = () => {
                   }}
                   className={`${placementClass} will-change-[transform,opacity] transform-gpu`}
                 >
-                  <div className="relative w-full max-w-full break-words flex flex-col gap-[10px] min-[744px]:gap-[15px]">
+                  <div className="relative w-full max-w-full break-words flex flex-col gap-[6px] min-[744px]:gap-[10px]">
                     <CardTitle className="whitespace-nowrap">
                       {step.title}
                     </CardTitle>

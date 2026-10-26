@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cases, type CaseItem } from '@/data/content';
-import { SectionTitle, CardTitle } from '@/components/ui/Typography';
+import { SectionTitle } from '@/components/ui/Typography';
 import { X, ExternalLink } from 'lucide-react';
 
 export const Cases: React.FC = () => {
@@ -90,12 +90,6 @@ export const Cases: React.FC = () => {
                       decoding="async"
                       className="w-full h-auto object-contain block" 
                     />
-                  </div>
-                  
-                  <div className="mt-[10px] min-[744px]:mt-[15px] text-left">
-                    <CardTitle className="group-hover:text-[#EB4F2E] transition-colors">
-                      {project.title}
-                    </CardTitle>
                   </div>
                 </a>
               </motion.div>
