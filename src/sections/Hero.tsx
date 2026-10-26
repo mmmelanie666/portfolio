@@ -59,7 +59,7 @@ export const Hero: React.FC = () => {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.85, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                className="text-[#FA7250] font-bold leading-[1.07] text-[22px] min-[400px]:text-[24px] min-[744px]:text-[26px] min-[860px]:text-[28px] lg:text-[32px] xl:text-[40px] min-[1400px]:text-[52px] w-full max-w-full"
+                className="text-[#FA7250] font-bold leading-[1.07] text-[22px] min-[400px]:text-[24px] min-[744px]:text-[26px] min-[860px]:text-[30px] lg:text-[40px] xl:text-[48px] min-[1400px]:text-[64px] w-full max-w-full"
               >
                 <span className="min-[540px]:hidden">
                   Проектирую сайты<br />

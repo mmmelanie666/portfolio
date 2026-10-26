@@ -17,7 +17,7 @@ export const SectionTitle: React.FC<TypographyProps> = ({ children, className = 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -40px 0px" }}
       transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={`text-[#FA7250] font-extrabold text-[20px] min-[744px]:text-[24px] lg:text-[28px] min-[1400px]:text-[36px] leading-[1.07] uppercase ${className}`}
+      className={`text-[#FA7250] font-extrabold text-[20px] min-[744px]:text-[24px] lg:text-[32px] min-[1400px]:text-[42px] leading-[1.07] uppercase ${className}`}
     >
       {children}
     </motion.h2>
