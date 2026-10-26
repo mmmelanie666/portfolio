@@ -114,8 +114,10 @@ export const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              src="/images/IMG_5222 1 [Motion Blur Preview].png"
+              src="/images/hero-photo.jpg"
               alt="Мелания Ваниосова"
+              fetchPriority="high"
+              decoding="async"
               className="relative z-10 w-full h-full object-cover select-none"
             />
 

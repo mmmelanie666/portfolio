@@ -173,34 +173,6 @@ body,
   .service-indent-stepped {
     padding-left: 60px !important;
   }
-
-  /* Горизонтальная лента Преимуществ на мобилке: отступ в начальной позиции, при скролле уходит за края */
-  .advantages-mobile-track {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    gap: 10px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-left: 20px;
-    scroll-padding-right: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .advantages-mobile-track::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-@media (min-width: 390px) and (max-width: 743px) {
-  .advantages-mobile-track {
-    scroll-padding-left: 24px;
-    scroll-padding-right: 24px;
-    padding-left: 24px;
-    padding-right: 24px;
-  }
 }
 
 @media (min-width: 1400px) {

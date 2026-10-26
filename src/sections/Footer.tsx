@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
     <footer className="relative py-12 md:py-16 lg:py-20 min-[1400px]:py-24 overflow-hidden flex flex-col items-center justify-center min-h-[50vh] bg-[#A9C1E8]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img src="/images/basement.png" alt="" loading="lazy" decoding="async" className="w-full h-full object-cover object-bottom" />
+        <img src="/images/basement.jpg" alt="" decoding="async" className="w-full h-full object-cover object-bottom" />
       </div>
 
       <motion.div

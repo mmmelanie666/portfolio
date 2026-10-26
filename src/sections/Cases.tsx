@@ -49,30 +49,24 @@ export const Cases: React.FC = () => {
           </SectionTitle>
         </div>
         
-        {/* Сетка: по 2 кейса в строку на всех разрешениях (на 700px и 960px отступы 25px, межколоночный gap 15px строго по сетке, каждая карточка ровно на половину сетки) */}
+        {/* Сетка: ровно по 2 кейса в строку на всех разрешениях без ступеньки */}
         <div className="grid grid-cols-2 gap-x-[10px] min-[600px]:gap-x-[15px] lg:gap-x-[40px] min-[1400px]:gap-x-[60px] gap-y-[24px] min-[744px]:gap-y-[36px] lg:gap-y-[60px] items-start">
           {cases.map((project, index) => {
-            // Ступенька через margin-top (не конфликтует с translateY анимацией Framer Motion)
-            let staggerClass = '';
-            if (index % 2 === 1) {
-              staggerClass += ' max-[743px]:mt-[28px] min-[744px]:max-[1023px]:mt-[45px] lg:mt-[60px] min-[1400px]:mt-[80px]';
-            }
-
             const isPlaceholderLink = !project.link || project.link === '#';
-            const cardDelay = index < 2 ? 0.4 + (index % 2) * 0.2 : (index % 2) * 0.2;
+            const cardDelay = index < 2 ? 0.3 + (index % 2) * 0.15 : (index % 2) * 0.15;
 
             return (
               <motion.div 
                 key={project.id}
-                initial={{ opacity: 0, y: 55 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{
-                  duration: 0.8,
+                  duration: 0.75,
                   delay: cardDelay,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className={`w-full relative ${staggerClass}`}
+                className="w-full relative"
               >
 
                 <a 
@@ -93,7 +87,7 @@ export const Cases: React.FC = () => {
                     <img 
                       src={project.image} 
                       alt={project.title}
-                      loading="lazy"
+                      decoding="async"
                       className="w-full h-auto object-contain block" 
                     />
                   </div>

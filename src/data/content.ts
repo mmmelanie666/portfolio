@@ -100,26 +100,26 @@ export const cases: CaseItem[] = [
   {
     id: 1,
     title: 'МАХОВИК ПРОСТРАНСТВА',
-    image: '/cases/case-1.png?v=2',
+    image: '/cases/case-1.jpg',
     link: 'https://outerspacer.tilda.ws/',
   },
   {
     id: 2,
     title: "HYBRID CONF' 25",
-    image: '/cases/case-2.png?v=2',
-    fullImage: '/cases/hybrid-conf-full.png',
+    image: '/cases/case-2.jpg',
+    fullImage: '/cases/hybrid-conf-full.jpg',
     link: '#',
   },
   {
     id: 3,
     title: 'ВСЁ О PROGRAMMATIC',
-    image: '/cases/case-3.png?v=2',
+    image: '/cases/case-3.jpg',
     link: 'https://academy.hybrid.ai/',
   },
   {
     id: 4,
     title: 'САЙТ ДЛЯ ФОТОГРАФА',
-    image: '/cases/case-4.png?v=2',
+    image: '/cases/case-4.jpg',
     link: 'https://vaniosovaph.ru/',
   },
 ];
