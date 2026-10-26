@@ -91,10 +91,10 @@ export const Advantages: React.FC = () => {
     <div
       ref={scrollTriggerRef}
       id="advantages"
-      className="relative bg-[#FEF9F4] h-[180vh] min-[744px]:h-[220vh] min-[1400px]:h-[230vh]"
+      className="relative bg-[#FEF9F4] h-[130vh] min-[744px]:h-[220vh] min-[1400px]:h-[230vh]"
     >
-      {/* Пин-контейнер: центрирован на планшете/десктопе, компактнее на мобилке */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center z-10 pt-[55px] pb-[20px] min-[744px]:pt-[85px] min-[744px]:pb-[40px] lg:pt-[90px] lg:pb-[40px] overflow-x-clip">
+      {/* Пин-контейнер: на мобилке прижат кверху (pt-[70px] под шапку), на десктопе центрирован (h-screen justify-center) */}
+      <div className="sticky top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center z-10 pt-[70px] pb-[16px] min-[744px]:pt-[85px] min-[744px]:pb-[40px] lg:pt-[90px] lg:pb-[40px] overflow-x-clip">
         <section className="w-full overflow-x-clip">
           {/* Заголовок: слева на мобилке (<744px), справа на планшете и десктопе (744px+) */}
           <div className="w-full mb-[16px] min-[744px]:mb-[40px] min-[1400px]:mb-[52px]">

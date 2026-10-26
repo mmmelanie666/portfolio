@@ -4,7 +4,7 @@ import { footerContent } from '@/data/content';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="relative py-8 min-[744px]:py-16 lg:py-20 min-[1400px]:py-24 overflow-hidden flex flex-col items-center justify-center min-h-[auto] min-[744px]:min-h-[50vh] bg-[#A9C1E8]">
+    <footer className="relative py-6 min-[744px]:py-16 lg:py-20 min-[1400px]:py-24 overflow-hidden flex flex-col items-center justify-center min-h-[auto] min-[744px]:min-h-[50vh] bg-[#A9C1E8]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img src="/images/basement.jpg" alt="" decoding="async" className="w-full h-full object-cover object-bottom" />
