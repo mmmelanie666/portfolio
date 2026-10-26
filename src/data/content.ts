@@ -100,7 +100,7 @@ export const cases: CaseItem[] = [
   {
     id: 1,
     title: 'МАХОВИК ПРОСТРАНСТВА',
-    image: '/cases/case-1.jpg',
+    image: '/cases/case-1.jpg?v=3',
     link: 'https://outerspacer.tilda.ws/',
   },
   {
