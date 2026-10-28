@@ -45,34 +45,32 @@ export const Hero: React.FC = () => {
             style={photoHeight ? { height: `${photoHeight}px` } : undefined}
             className="w-full min-[744px]:w-auto flex-1 min-w-0 flex flex-col justify-between items-start text-left"
           >
-            <div className="flex flex-col items-start gap-[16px] min-[744px]:gap-[20px] lg:gap-[24px] min-[1400px]:gap-[32px]">
+            <div className="flex flex-col items-start gap-[8px] min-[744px]:gap-[12px] lg:gap-[16px] min-[1400px]:gap-[20px] w-full min-w-0">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.85, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                className="text-[#FA7250] font-extrabold uppercase leading-[1.0] tracking-[-0.03em] whitespace-nowrap text-[clamp(21px,6.8vw,28px)] min-[375px]:text-[28px] min-[390px]:text-[30px] min-[414px]:text-[32px] min-[430px]:text-[34px] min-[744px]:text-[32px] min-[860px]:text-[38px] lg:text-[44px] xl:text-[52px] min-[1400px]:text-[56px] min-[1600px]:text-[68px] min-[1900px]:text-[80px] w-full max-w-full"
+              >
+                {heroContent.title}
+              </motion.h1>
+
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="text-[#FA7250] font-bold leading-[1.07] text-[12px] min-[744px]:text-[14px] lg:text-[16px] min-[1400px]:text-[18px]"
+                transition={{ duration: 0.8, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                className="text-[#FA7250] font-normal leading-[1.3] text-[12px] min-[390px]:text-[13px] min-[400px]:text-[14px] min-[744px]:text-[14px] min-[860px]:text-[16px] lg:text-[20px] xl:text-[24px] min-[1400px]:text-[32px] w-full max-w-full"
               >
-                {heroContent.preTitle}
-              </motion.p>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.85, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                className="text-[#FA7250] font-bold leading-[1.07] text-[22px] min-[400px]:text-[24px] min-[744px]:text-[26px] min-[860px]:text-[30px] lg:text-[40px] xl:text-[48px] min-[1400px]:text-[64px] w-full max-w-full"
-              >
-                <span className="min-[540px]:hidden">
-                  Проектирую сайты<br />
-                  для&nbsp;бизнеса<br />
-                  с&nbsp;продуманной структурой<br />
-                  и&nbsp;крутым визуалом
-                </span>
-                <span className="hidden min-[540px]:inline">
+                <span className="min-[420px]:hidden">
                   Проектирую сайты для&nbsp;бизнеса<br />
                   с&nbsp;продуманной структурой<br />
                   и&nbsp;крутым визуалом
                 </span>
-              </motion.h1>
+                <span className="hidden min-[420px]:inline">
+                  Проектирую сайты для&nbsp;бизнеса<br />
+                  с&nbsp;продуманной структурой и&nbsp;крутым визуалом
+                </span>
+              </motion.p>
             </div>
 
             {/* Кнопка "заказать сайт" на 744px+: выровнена строго по одной горизонтальной линии с нижним краем фотографии */}
