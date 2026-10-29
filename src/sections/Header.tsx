@@ -82,7 +82,7 @@ export const Header: React.FC = () => {
             href={footerContent.telegramLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="h-[44px] min-[744px]:h-[48px] inline-flex items-center justify-center px-[24px] min-[744px]:px-[32px] font-bold text-[14px] min-[744px]:text-[16px] leading-[1.07] transition-all hover:bg-[#EB4F2E] bg-[#FA7250] text-[#FEF9F4] whitespace-nowrap rounded-none"
+            className="btn-blur-hover h-[44px] min-[744px]:h-[48px] inline-flex items-center justify-center px-[24px] min-[744px]:px-[32px] font-bold text-[14px] min-[744px]:text-[16px] leading-[1.07] bg-[#FA7250] text-[#FEF9F4] whitespace-nowrap rounded-none"
           >
             заказать сайт
           </a>
@@ -107,7 +107,7 @@ export const Header: React.FC = () => {
               href={footerContent.telegramLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#FA7250] text-[#FEF9F4] w-[160px] h-[35px] min-[1400px]:w-[220px] min-[1400px]:h-[48px] inline-flex items-center justify-center font-bold text-[14px] min-[1400px]:text-[18px] leading-[1.07] hover:bg-[#EB4F2E] transition-colors whitespace-nowrap"
+              className="btn-blur-hover bg-[#FA7250] text-[#FEF9F4] w-[160px] h-[35px] min-[1400px]:w-[220px] min-[1400px]:h-[48px] inline-flex items-center justify-center font-bold text-[14px] min-[1400px]:text-[18px] leading-[1.07] whitespace-nowrap"
             >
               заказать сайт
             </a>

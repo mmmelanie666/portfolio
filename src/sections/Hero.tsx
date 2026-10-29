@@ -4,26 +4,66 @@ import { heroContent, footerContent } from '@/data/content';
 
 export const Hero: React.FC = () => {
   const photoRef = useRef<HTMLDivElement>(null);
+  const textColRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const [photoHeight, setPhotoHeight] = useState<number | null>(null);
 
   useLayoutEffect(() => {
     const el = photoRef.current;
-    if (!el) return;
+    const colEl = textColRef.current;
+    const titleEl = titleRef.current;
+
+    const fitTitle = () => {
+      if (!colEl || !titleEl) return;
+      const availableWidth = colEl.clientWidth;
+      if (availableWidth <= 0) return;
+
+      const currentFontSize = parseFloat(window.getComputedStyle(titleEl).fontSize);
+      const currentTextWidth = titleEl.getBoundingClientRect().width;
+      if (currentFontSize > 0 && currentTextWidth > 0) {
+        const widthPerPx = currentTextWidth / currentFontSize;
+        const isDesktopTwoLines = window.innerWidth >= 744;
+        const targetWidth = isDesktopTwoLines
+          ? Math.max(0, availableWidth * 0.76)
+          : Math.max(0, availableWidth - 1);
+        let exactFontSize = Math.floor((targetWidth / widthPerPx) * 10) / 10;
+
+        if (isDesktopTwoLines && el) {
+          const pHeight = el.getBoundingClientRect().height;
+          if (pHeight > 220) {
+            const maxByHeight = Math.floor(((pHeight - 210) / 2.2) * 10) / 10;
+            exactFontSize = Math.min(exactFontSize, maxByHeight);
+          }
+        }
+
+        titleEl.style.fontSize = `${exactFontSize}px`;
+      }
+    };
 
     const updateHeight = () => {
-      if (window.innerWidth >= 744) {
-        setPhotoHeight(el.getBoundingClientRect().height);
-      } else {
-        setPhotoHeight(null);
+      if (el) {
+        if (window.innerWidth >= 744) {
+          setPhotoHeight(el.getBoundingClientRect().height);
+        } else {
+          setPhotoHeight(null);
+        }
       }
+      fitTitle();
     };
 
     updateHeight();
 
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(() => {
+        fitTitle();
+      });
+    }
+
     const ro = new ResizeObserver(() => {
       updateHeight();
     });
-    ro.observe(el);
+    if (el) ro.observe(el);
+    if (colEl) ro.observe(colEl);
 
     window.addEventListener('resize', updateHeight);
     return () => {
@@ -34,32 +74,40 @@ export const Hero: React.FC = () => {
 
   return (
     <section
-      className="relative min-h-[auto] min-[1200px]:min-h-screen flex flex-col overflow-x-clip bg-[#FEF9F4] mb-0"
+      className="relative min-h-[auto] flex flex-col overflow-x-clip bg-[#FEF9F4] mb-0"
       id="hero"
     >
       <div className="w-full max-w-[1920px] mx-auto px-5 min-[744px]:max-[1023px]:!px-[25px] lg:max-[1399px]:!px-[50px] min-[1400px]:px-[80px] relative z-10 flex-1 flex flex-col justify-center pt-[95px] min-[744px]:pt-[125px] min-[1400px]:pt-[140px] pb-0">
-        <div className="w-full flex-1 flex flex-col min-[744px]:flex-row justify-between items-center min-[744px]:items-start gap-[36px] min-[744px]:gap-[20px] min-[860px]:gap-[24px] lg:gap-[32px] min-[1400px]:gap-[40px] min-[744px]:max-[1199px]:my-0 min-[1200px]:my-auto">
+        <div className="w-full flex-1 flex flex-col min-[744px]:flex-row justify-between items-center min-[744px]:items-start gap-[36px] min-[744px]:gap-[20px] min-[860px]:gap-[24px] lg:gap-[32px] min-[1400px]:gap-[40px]">
           
           {/* ЛЕВАЯ КОЛОНКА: высота строго равна высоте фото (подпись сверху вровень с верхом фото, кнопка снизу строго вровень с низом фото) */}
           <div
             style={photoHeight ? { height: `${photoHeight}px` } : undefined}
             className="w-full min-[744px]:w-auto flex-1 min-w-0 flex flex-col justify-between items-start text-left"
           >
-            <div className="flex flex-col items-start gap-[8px] min-[744px]:gap-[12px] lg:gap-[16px] min-[1400px]:gap-[20px] w-full min-w-0">
+            <div
+              ref={textColRef}
+              className="flex flex-col items-start gap-[8px] min-[744px]:gap-[12px] lg:gap-[16px] min-[1400px]:gap-[20px] w-full min-w-0 [container-type:inline-size]"
+            >
               <motion.h1
+                ref={titleRef}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.85, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                className="text-[#FA7250] font-extrabold uppercase leading-[1.0] tracking-[-0.03em] whitespace-nowrap text-[clamp(21px,6.8vw,28px)] min-[375px]:text-[28px] min-[390px]:text-[30px] min-[414px]:text-[32px] min-[430px]:text-[34px] min-[744px]:text-[32px] min-[860px]:text-[38px] lg:text-[44px] xl:text-[52px] min-[1400px]:text-[56px] min-[1600px]:text-[68px] min-[1900px]:text-[80px] w-full max-w-full"
+                className="text-[#FA7250] font-extrabold uppercase leading-[0.95] tracking-[-0.04em] whitespace-nowrap text-[9.5cqw] min-[744px]:text-[11.5cqw] w-fit"
               >
-                {heroContent.title}
+                <span className="min-[744px]:hidden">{heroContent.title}</span>
+                <span className="hidden min-[744px]:inline">
+                  МЕЛАНА<br />
+                  ВАНИОСОВА
+                </span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
-                className="text-[#FA7250] font-normal leading-[1.3] text-[12px] min-[390px]:text-[13px] min-[400px]:text-[14px] min-[744px]:text-[14px] min-[860px]:text-[16px] lg:text-[20px] xl:text-[24px] min-[1400px]:text-[32px] w-full max-w-full"
+                className="text-[#FA7250] font-normal leading-[1.3] text-[12px] min-[390px]:text-[13px] min-[400px]:text-[14px] min-[744px]:text-[14px] min-[860px]:text-[15px] lg:text-[16px] xl:text-[18px] min-[1400px]:text-[20px] w-full max-w-full"
               >
                 <span className="min-[420px]:hidden">
                   Проектирую сайты для&nbsp;бизнеса<br />
@@ -84,7 +132,7 @@ export const Hero: React.FC = () => {
                 href={footerContent.telegramLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative z-10 bg-[#FA7250] text-[#FEF9F4] w-[280px] min-[860px]:w-[320px] lg:w-[360px] xl:w-[410px] min-[1400px]:w-[490px] h-[60px] lg:h-[78px] min-[1400px]:h-[98px] inline-flex items-center justify-center font-bold text-[16px] lg:text-[20px] min-[1400px]:text-[24px] leading-[1.07] hover:bg-[#EB4F2E] transition-colors text-center whitespace-nowrap"
+                className="btn-blur-hover relative z-10 bg-[#FA7250] text-[#FEF9F4] w-[280px] min-[860px]:w-[320px] lg:w-[360px] xl:w-[410px] min-[1400px]:w-[490px] h-[60px] lg:h-[78px] min-[1400px]:h-[98px] inline-flex items-center justify-center font-bold text-[16px] lg:text-[20px] min-[1400px]:text-[24px] leading-[1.07] text-center whitespace-nowrap"
               >
                 {heroContent.cta}
               </a>
@@ -148,7 +196,7 @@ export const Hero: React.FC = () => {
               href={footerContent.telegramLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative z-10 bg-[#FA7250] text-[#FEF9F4] w-full py-[20px] px-[40px] inline-flex items-center justify-center font-bold text-[18px] leading-[1.07] hover:bg-[#EB4F2E] transition-colors text-center"
+              className="btn-blur-hover relative z-10 bg-[#FA7250] text-[#FEF9F4] w-full py-[20px] px-[40px] inline-flex items-center justify-center font-bold text-[18px] leading-[1.07] text-center"
             >
               {heroContent.cta}
             </a>

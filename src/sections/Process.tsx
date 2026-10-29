@@ -9,7 +9,7 @@ export const Process: React.FC = () => {
   // Фиксированный скролл этапов: секция залипает на экране, и шаги поочередно появляются по скроллу
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end end'],
+    offset: ['start 0.65', 'end end'],
   });
 
   const smoothProgress = useSpring(scrollYProgress, {

@@ -44,29 +44,29 @@ export const Cases: React.FC = () => {
         
         {/* Заголовок: строго единый отступ снизу */}
         <div className="flex justify-start min-[744px]:justify-end mb-[24px] min-[744px]:mb-[36px] min-[1400px]:mb-[48px]">
-          <SectionTitle delay={0.25} className="text-left min-[744px]:text-right whitespace-nowrap">
+          <SectionTitle delay={0.15} className="text-left min-[744px]:text-right whitespace-nowrap">
             КЕЙСЫ
           </SectionTitle>
         </div>
         
-        {/* Сетка: ровно по 2 кейса в строку на всех разрешениях, вертикальный gap равен горизонтальному */}
-        <div className="grid grid-cols-2 gap-[10px] min-[600px]:gap-[15px] lg:gap-[40px] min-[1400px]:gap-[60px] items-start">
+        {/* Сетка: на вертикальных разрешениях (< 1024px и portrait) в 1 колонку во всю ширину, на горизонтальных (1024px+) — по 2 кейса в строку */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 portrait:grid-cols-1 gap-[20px] min-[744px]:gap-[28px] lg:gap-[40px] min-[1400px]:gap-[60px] items-start">
           {cases.map((project, index) => {
             const isPlaceholderLink = !project.link || project.link === '#';
-            const cardDelay = index < 2 ? 0.3 + (index % 2) * 0.15 : (index % 2) * 0.15;
+            const cardDelay = (index % 2) * 0.12;
 
             return (
               <motion.div 
                 key={project.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
+                initial={{ opacity: 0, y: 48, scale: 0.96 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.22, margin: "0px 0px -70px 0px" }}
                 transition={{
-                  duration: 0.75,
+                  duration: 0.8,
                   delay: cardDelay,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="w-full relative"
+                className="w-full relative aspect-square"
               >
 
                 <a 
@@ -81,14 +81,16 @@ export const Cases: React.FC = () => {
                       e.preventDefault();
                     }
                   }}
-                  className="group block relative w-full cursor-pointer"
+                  className="group block relative w-full h-full cursor-pointer"
                 >
-                  <div className="relative hover:-translate-y-4 transition-transform duration-500 w-full">
+                  <div className="relative hover:-translate-y-4 transition-transform duration-500 w-full h-full">
                     <img 
                       src={project.image} 
                       alt={project.title}
+                      width={1320}
+                      height={1320}
                       decoding="async"
-                      className="w-full h-auto object-contain block" 
+                      className="w-full h-full object-contain block" 
                     />
                   </div>
                 </a>

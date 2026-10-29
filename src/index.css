@@ -2,6 +2,11 @@
 
 @theme {
   --font-sans: "Manrope", sans-serif;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
 }
 
 html,
@@ -11,6 +16,44 @@ body,
   font-family: "Manrope", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Анимация кнопки "заказать сайт": острые углы и деликатный блюр по контуру при наведении */
+.btn-blur-hover {
+  position: relative;
+  isolation: isolate;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s ease;
+}
+
+.btn-blur-hover::before,
+.btn-blur-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: #FA7250;
+  border-radius: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition:
+    filter 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .btn-blur-hover:hover::before {
+    filter: blur(8px);
+    transform: scale(1.03, 1.08);
+    opacity: 0.95;
+  }
+
+  .btn-blur-hover:hover::after {
+    filter: blur(2.5px);
+    transform: scale(1.005, 1.02);
+    opacity: 0.96;
+  }
 }
 
 @media (min-width: 1024px) and (max-width: 1399px) {

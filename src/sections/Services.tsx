@@ -1,43 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { services } from '@/data/content';
 import { SectionTitle, CardTitle, BodyText } from '@/components/ui/Typography';
 
 export const Services: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
-
-  useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const isMobile = screenWidth < 744;
 
   return (
     <section
-      className="pt-[45px] min-[744px]:pt-[100px] lg:pt-[120px] min-[1400px]:pt-[140px] pb-0 bg-[#FEF9F4] relative z-30"
+      className="pt-[40px] min-[744px]:pt-[65px] lg:pt-[80px] min-[1400px]:pt-[95px] pb-0 bg-[#FEF9F4] relative z-30"
       id="services"
     >
-      {/* Фоновые декоративные элементы с блюром: на десктопе плавно появляются поочередно, на мобилке стабильно видны без глитчей */}
+      {/* Фоновые декоративные элементы с блюром: плавно появляются поочередно перед контентом */}
       <div className="absolute inset-0 w-full max-w-[1920px] mx-auto pointer-events-none z-0 overflow-hidden transform-gpu translate-z-0">
         <motion.img
-          initial={isMobile ? { opacity: 0.9, scale: 1 } : { opacity: 0, scale: 0.85 }}
-          whileInView={isMobile ? undefined : { opacity: 0.9, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          whileInView={{ opacity: 0.9, scale: 1 }}
           viewport={{ once: true, amount: 0.05 }}
-          transition={isMobile ? { duration: 0 } : { duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/stages-1.svg"
           alt=""
           decoding="async"
           className="hidden lg:block absolute -left-[50px] top-[5%] w-[340px] min-[1400px]:w-[420px] h-auto"
         />
         <motion.img
-          initial={isMobile ? { opacity: 0.85, scale: 1 } : { opacity: 0, scale: 0.85 }}
-          whileInView={isMobile ? undefined : { opacity: 0.85, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          whileInView={{ opacity: 0.85, scale: 1 }}
           viewport={{ once: true, amount: 0.05 }}
-          transition={isMobile ? { duration: 0 } : { duration: 0.85, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.85, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/stages-3.svg"
           alt=""
           decoding="async"
@@ -45,20 +35,20 @@ export const Services: React.FC = () => {
         />
         {/* В пустом углу слева на <1024px (напротив сдвинутых карточек Интернет-магазин и Брендинг) лежат блюр-элементы */}
         <motion.img
-          initial={isMobile ? { opacity: 0.9, scale: 1 } : { opacity: 0, scale: 0.85 }}
-          whileInView={isMobile ? undefined : { opacity: 0.9, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          whileInView={{ opacity: 0.9, scale: 1 }}
           viewport={{ once: true, amount: 0.05 }}
-          transition={isMobile ? { duration: 0 } : { duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/stages-1.svg"
           alt=""
           decoding="async"
           className="lg:hidden absolute -left-[45px] bottom-[26%] w-[210px] min-[744px]:w-[310px] h-auto"
         />
         <motion.img
-          initial={isMobile ? { opacity: 0.95, scale: 1 } : { opacity: 0, scale: 0.85 }}
-          whileInView={isMobile ? undefined : { opacity: 0.95, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.85 }}
+          whileInView={{ opacity: 0.95, scale: 1 }}
           viewport={{ once: true, amount: 0.05 }}
-          transition={isMobile ? { duration: 0 } : { duration: 0.85, delay: 0.38, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.85, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/Group 2131329139.svg"
           alt=""
           decoding="async"
@@ -69,7 +59,7 @@ export const Services: React.FC = () => {
       <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] relative z-10">
         {/* Заголовок секции: строго единый отступ снизу */}
         <div className="flex justify-start min-[744px]:justify-end mb-[24px] min-[744px]:mb-[36px] min-[1400px]:mb-[48px]">
-          <SectionTitle delay={isMobile ? 0 : 0.35} className="text-left min-[744px]:text-right whitespace-nowrap">
+          <SectionTitle delay={0.15} className="text-left min-[744px]:text-right whitespace-nowrap">
             УСЛУГИ
           </SectionTitle>
         </div>
@@ -102,10 +92,10 @@ export const Services: React.FC = () => {
             return (
               <motion.div 
                 key={index}
-                initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
-                whileInView={isMobile ? undefined : { opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px -40px 0px" }}
-                transition={isMobile ? { duration: 0 } : { duration: 0.7, delay: 0.5 + index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2, margin: "0px 0px -50px 0px" }}
+                transition={{ duration: 0.75, delay: 0.1 + index * 0.06, ease: [0.16, 1, 0.3, 1] }}
                 className={`relative group lg:cursor-pointer text-left lg:text-center w-full lg:w-fit lg:mx-auto flex flex-col items-start lg:items-center ${
                   isIndentedMobile ? 'service-indent-stepped' : ''
                 }`}

@@ -21,7 +21,7 @@ export const Advantages: React.FC = () => {
   // Отслеживаем скролл на десктопе/планшетах:
   const { scrollYProgress: desktopProgress } = useScroll({
     target: scrollTriggerRef,
-    offset: ['start start', 'end end'],
+    offset: ['start 0.65', 'end end'],
   });
 
   const smoothProgress = useSpring(desktopProgress, {
@@ -55,6 +55,7 @@ export const Advantages: React.FC = () => {
     let isTouching = false;
     let isTouchOnAdvantages = false;
     let isHorizontalGesture = false;
+    let didMoveCards = false;
 
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
@@ -63,6 +64,7 @@ export const Advantages: React.FC = () => {
       touchStartProg = mobileProgressMotion.get();
       isTouching = true;
       isHorizontalGesture = false;
+      didMoveCards = false;
 
       const target = e.target as Node | null;
       isTouchOnAdvantages = !!target && targetEl.contains(target);
@@ -72,7 +74,7 @@ export const Advantages: React.FC = () => {
       if (!isTouching || e.touches.length !== 1) return;
 
       const rect = targetEl.getBoundingClientRect();
-      const isDocked = rect.top <= 95 && rect.bottom >= 200;
+      const isDocked = rect.top <= 110 && rect.bottom >= 220;
       if (!isDocked && !isTouchOnAdvantages) return;
 
       const currentX = e.touches[0].clientX;
@@ -87,20 +89,23 @@ export const Advantages: React.FC = () => {
       // Горизонтальный свайп по карточкам: прямое отзывчивое следование за пальцем
       if (absX > absY && absX > 6) {
         isHorizontalGesture = true;
+        didMoveCards = true;
         if (e.cancelable) e.preventDefault();
-        const nextProg = Math.max(0, Math.min(1, touchStartProg + dx / 950));
+        const nextProg = Math.max(0, Math.min(1, touchStartProg + dx / 800));
         mobileProgressMotion.set(nextProg);
         return;
       }
 
-      // Вертикальный свайп при фиксации секции:
-      if (!isHorizontalGesture && absY > absX && absY > 6 && (isDocked || isTouchOnAdvantages)) {
+      // Вертикальный свайп только при фиксации секции в рабочей зоне экрана:
+      if (!isHorizontalGesture && absY > absX && absY > 6 && isDocked) {
         if (dy > 0 && currentProg < 0.985) {
+          didMoveCards = true;
           if (e.cancelable) e.preventDefault();
           const nextProg = Math.min(1, touchStartProg + dy / 550);
           mobileProgressMotion.set(nextProg);
           return;
         } else if (dy < 0 && currentProg > 0.015) {
+          didMoveCards = true;
           if (e.cancelable) e.preventDefault();
           const nextProg = Math.max(0, touchStartProg - Math.abs(dy) / 550);
           mobileProgressMotion.set(nextProg);
@@ -112,6 +117,8 @@ export const Advantages: React.FC = () => {
     const handleTouchEnd = (e: TouchEvent) => {
       if (!isTouching) return;
       isTouching = false;
+      if (!didMoveCards) return;
+      didMoveCards = false;
 
       const currentX = e.changedTouches[0]?.clientX ?? touchStartX;
       const currentY = e.changedTouches[0]?.clientY ?? touchStartY;
@@ -219,7 +226,7 @@ export const Advantages: React.FC = () => {
       window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('touchcancel', handleTouchEnd);
     };
-  }, [isMobile]);
+  }, [isMobile, mobileProgressMotion]);
 
   // Появление карточек на десктопе:
   const cardOpacity0 = useTransform(smoothProgress, [0.00, 0.12], [0, 1]);
@@ -248,7 +255,7 @@ export const Advantages: React.FC = () => {
   // Горизонтальный сдвиг ленты на десктопе:
   const desktopTrackProgress = useTransform(
     smoothProgress,
-    [0.35, 0.80],
+    [0.36, 0.92],
     [0, 1]
   );
 
@@ -303,10 +310,10 @@ export const Advantages: React.FC = () => {
     <div
       ref={scrollTriggerRef}
       id="advantages"
-      className="relative bg-[#FEF9F4] max-[743px]:h-auto min-[744px]:h-[250vh] min-[1400px]:h-[280vh]"
+      className="relative bg-[#FEF9F4] max-[743px]:h-auto min-[744px]:h-[170vh] min-[1400px]:h-[185vh]"
     >
-      {/* Пин-контейнер: строго единый отступ от фиксированного хедера */}
-      <div className="relative min-[744px]:sticky min-[744px]:top-0 min-[744px]:h-screen w-full flex flex-col justify-start min-[744px]:justify-center z-10 pt-[85px] min-[744px]:pt-[110px] min-[1400px]:pt-[130px] pb-[20px] min-[744px]:pb-[40px] overflow-x-clip">
+      {/* Пин-контейнер: без растяжения на 100vh, чтобы не создавать пустых отступов сверху и снизу */}
+      <div className="relative min-[744px]:sticky min-[744px]:top-0 w-full flex flex-col justify-start z-10 pt-[50px] min-[744px]:pt-[85px] lg:pt-[100px] min-[1400px]:pt-[115px] pb-[10px] min-[744px]:pb-[20px] overflow-x-clip">
         <section className="w-full overflow-x-clip">
           {/* Заголовок: строго единый отступ снизу */}
           <div className="w-full mb-[24px] min-[744px]:mb-[36px] min-[1400px]:mb-[48px]">
@@ -318,8 +325,12 @@ export const Advantages: React.FC = () => {
           </div>
 
           {/* Лента карточек: управляемый скроллом и свайпом фрейм */}
-          <div
+          <motion.div
             ref={trackContainerRef}
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15, margin: "0px 0px -40px 0px" }}
+            transition={{ duration: 0.75, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
             className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] relative z-10 overflow-visible"
           >
             <motion.div
@@ -367,7 +378,7 @@ export const Advantages: React.FC = () => {
                 );
               })}
             </motion.div>
-          </div>
+          </motion.div>
         </section>
       </div>
     </div>
