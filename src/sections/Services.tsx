@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { services } from '@/data/content';
-import { SectionTitle, CardTitle, BodyText } from '@/components/ui/Typography';
+import { SectionTitle, BodyText } from '@/components/ui/Typography';
 
 export const Services: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -20,6 +20,7 @@ export const Services: React.FC = () => {
           transition={{ duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/stages-1.svg"
           alt=""
+          loading="lazy"
           decoding="async"
           className="hidden lg:block absolute -left-[50px] top-[5%] w-[340px] min-[1400px]:w-[420px] h-auto"
         />
@@ -30,6 +31,7 @@ export const Services: React.FC = () => {
           transition={{ duration: 0.85, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/stages-3.svg"
           alt=""
+          loading="lazy"
           decoding="async"
           className="absolute -right-[140px] min-[744px]:-right-[180px] top-[18%] lg:top-[25%] w-[320px] min-[744px]:w-[480px] min-[1400px]:w-[580px] h-auto"
         />
@@ -41,6 +43,7 @@ export const Services: React.FC = () => {
           transition={{ duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/stages-1.svg"
           alt=""
+          loading="lazy"
           decoding="async"
           className="lg:hidden absolute -left-[45px] bottom-[26%] w-[210px] min-[744px]:w-[310px] h-auto"
         />
@@ -51,6 +54,7 @@ export const Services: React.FC = () => {
           transition={{ duration: 0.85, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/Group 2131329139.svg"
           alt=""
+          loading="lazy"
           decoding="async"
           className="absolute left-[10px] min-[744px]:left-[25px] lg:left-[4%] bottom-[5%] min-[744px]:bottom-[6%] lg:bottom-[90px] w-[155px] min-[744px]:w-[210px] min-[1400px]:w-[250px] h-auto"
         />
@@ -103,13 +107,9 @@ export const Services: React.FC = () => {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Заголовок: на десктопе (1024px+) крупно во всю ширину, на <1024px тем же стилем CardTitle, начертание ExtraBold (800) */}
-                <h3 className="hidden lg:block lg:text-[calc((100vw-100px)/14.4)] min-[1400px]:text-[min(calc((100vw-120px)/14.4),115px)] font-extrabold text-[#FA7250] uppercase leading-[0.97] whitespace-nowrap transition-transform duration-300 lg:group-hover:scale-[1.02]">
+                <h3 className="text-[#FA7250] font-extrabold uppercase whitespace-nowrap text-[16px] min-[744px]:text-[18px] leading-[1.07] lg:text-[calc((100vw-100px)/14.4)] min-[1400px]:text-[min(calc((100vw-120px)/14.4),115px)] lg:leading-[0.97] transition-transform duration-300 lg:group-hover:scale-[1.02]">
                   {service.title}
                 </h3>
-
-                <CardTitle className="lg:hidden whitespace-nowrap !font-extrabold">
-                  {service.title}
-                </CardTitle>
 
                 {/* Мобильные и планшеты (< 1024px): асимметричная композиция со скрина с единым отступом от заголовка до текста */}
                 <div className="lg:hidden mt-[10px] min-[744px]:mt-[15px] w-full flex flex-col items-start text-left">
@@ -132,6 +132,7 @@ export const Services: React.FC = () => {
                 
                 {/* Десктоп (1024px+): всплывающая плашка по наведению */}
                 <div 
+                  aria-hidden="true"
                   className={`
                     hidden lg:block absolute z-30 ${positionClasses}
                     ${widthClass}

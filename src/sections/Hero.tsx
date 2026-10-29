@@ -96,11 +96,7 @@ export const Hero: React.FC = () => {
                 transition={{ duration: 0.85, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
                 className="text-[#FA7250] font-extrabold uppercase leading-[0.95] tracking-[-0.04em] whitespace-nowrap text-[9.5cqw] min-[744px]:text-[11.5cqw] w-fit"
               >
-                <span className="min-[744px]:hidden">{heroContent.title}</span>
-                <span className="hidden min-[744px]:inline">
-                  МЕЛАНА<br />
-                  ВАНИОСОВА
-                </span>
+                МЕЛАНА<span className="min-[744px]:hidden"> </span><br className="hidden min-[744px]:inline" />ВАНИОСОВА
               </motion.h1>
 
               <motion.p
@@ -109,15 +105,8 @@ export const Hero: React.FC = () => {
                 transition={{ duration: 0.8, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
                 className="text-[#FA7250] font-normal leading-[1.3] text-[12px] min-[390px]:text-[13px] min-[400px]:text-[14px] min-[744px]:text-[14px] min-[860px]:text-[15px] lg:text-[16px] xl:text-[18px] min-[1400px]:text-[20px] w-full max-w-full"
               >
-                <span className="min-[420px]:hidden">
-                  Проектирую сайты для&nbsp;бизнеса<br />
-                  с&nbsp;продуманной структурой<br />
-                  и&nbsp;крутым визуалом
-                </span>
-                <span className="hidden min-[420px]:inline">
-                  Проектирую сайты для&nbsp;бизнеса<br />
-                  с&nbsp;продуманной структурой и&nbsp;крутым визуалом
-                </span>
+                Проектирую сайты для&nbsp;бизнеса<br />
+                с&nbsp;продуманной структурой<br className="min-[420px]:hidden" /><span className="hidden min-[420px]:inline"> </span>и&nbsp;крутым визуалом
               </motion.p>
             </div>
 

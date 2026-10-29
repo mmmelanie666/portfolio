@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
     <footer className="relative py-[60px] min-[744px]:py-[90px] lg:py-[120px] min-[1400px]:py-[140px] overflow-hidden flex flex-col items-center justify-center min-h-[auto] min-[744px]:min-h-[50vh] bg-[#A9C1E8]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img src="/images/basement.jpg" alt="" decoding="async" className="w-full h-full object-cover object-bottom" />
+        <img src="/images/basement.jpg" alt="" loading="lazy" decoding="async" className="w-full h-full object-cover object-bottom" />
       </div>
 
       <div className="w-full max-w-[1920px] mx-auto px-5 lg:px-[40px] xl:px-[60px] lg:max-[1399px]:!px-[50px] min-[744px]:max-[1023px]:!px-[25px] relative z-10 text-center flex flex-col items-center">

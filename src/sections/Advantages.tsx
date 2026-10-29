@@ -360,6 +360,7 @@ export const Advantages: React.FC = () => {
                         style={{ scale: isMobile ? 1 : imgScale }}
                         src={adv.icon}
                         alt={adv.title}
+                        loading="lazy"
                         decoding="async"
                         className="max-h-full max-w-full w-auto h-auto object-contain select-none pointer-events-none will-change-transform transform-gpu"
                       />

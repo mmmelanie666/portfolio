@@ -71,6 +71,7 @@ export const Process: React.FC = () => {
               transition={{ duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
               src="/stages/stages-1.svg"
               alt=""
+              loading="lazy"
               decoding="async"
               style={{ position: 'absolute', left: '0px', top: '100px', width: '330px', height: '300px', transform: 'rotate(180deg)' }}
             />
@@ -81,6 +82,7 @@ export const Process: React.FC = () => {
               transition={{ duration: 0.85, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
               src="/stages/stages-3.svg"
               alt=""
+              loading="lazy"
               decoding="async"
               style={{ position: 'absolute', right: '0px', top: '140px', width: '420px', height: '420px', transform: 'scale(1.4)' }}
             />
@@ -91,6 +93,7 @@ export const Process: React.FC = () => {
               transition={{ duration: 0.85, delay: 0.38, ease: [0.16, 1, 0.3, 1] }}
               src="/stages/stages-4.svg"
               alt=""
+              loading="lazy"
               decoding="async"
               style={{ position: 'absolute', left: '0px', bottom: '20px', width: '203px', height: '147px', transform: 'rotate(0deg)' }}
             />
@@ -107,6 +110,7 @@ export const Process: React.FC = () => {
               transition={{ duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
               src="/stages/stages-1.svg"
               alt=""
+              loading="lazy"
               decoding="async"
               className="absolute -left-[55px] min-[744px]:-left-[70px] top-[140px] min-[744px]:top-[180px] w-[180px] h-[160px] min-[744px]:w-[260px] min-[744px]:h-[230px] rotate-180"
             />
@@ -118,6 +122,7 @@ export const Process: React.FC = () => {
               transition={{ duration: 0.85, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
               src="/stages/stages-3.svg"
               alt=""
+              loading="lazy"
               decoding="async"
               className="absolute -right-[140px] min-[744px]:-right-[200px] top-[70px] min-[744px]:top-[80px] w-[320px] h-[320px] min-[744px]:w-[460px] min-[744px]:h-[460px]"
             />
@@ -137,6 +142,8 @@ export const Process: React.FC = () => {
               <img
                 src="/stages/stages-4.svg"
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="absolute bottom-0 -left-[20px] min-[744px]:-left-[25px] lg:-left-[50px] w-[115px] min-[744px]:w-[160px] lg:w-[170px] h-auto max-w-none"
               />
             </motion.div>
@@ -152,6 +159,8 @@ export const Process: React.FC = () => {
               <img
                 src="/stages/stages-2.svg"
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="stage-2-img"
               />
             </motion.div>
@@ -167,6 +176,8 @@ export const Process: React.FC = () => {
               <img
                 src="/stages/stages-5.svg"
                 alt=""
+                loading="lazy"
+                decoding="async"
                 className="stage-5-img"
               />
             </motion.div>

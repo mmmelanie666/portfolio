@@ -35,6 +35,7 @@ export const Cases: React.FC = () => {
           transition={{ duration: 0.85, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
           src="/stages/stages-1.svg"
           alt=""
+          loading="lazy"
           decoding="async"
           className="absolute left-1/2 -translate-x-1/2 top-[5px] min-[744px]:top-[10px] w-[320px] min-[744px]:w-[600px] min-[1400px]:w-[760px] h-auto max-w-none -scale-y-100"
         />
@@ -89,6 +90,7 @@ export const Cases: React.FC = () => {
                       alt={project.title}
                       width={1320}
                       height={1320}
+                      loading="lazy"
                       decoding="async"
                       className="w-full h-full object-contain block" 
                     />
