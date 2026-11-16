@@ -17,6 +17,7 @@ export const Advantages: React.FC = () => {
   }, []);
 
   const isMobile = screenWidth < 744;
+  const totalSteps = Math.max(1, advantages.length - 1);
 
   // Отслеживаем скролл на десктопе/планшетах:
   const { scrollYProgress: desktopProgress } = useScroll({
@@ -86,12 +87,12 @@ export const Advantages: React.FC = () => {
 
       const currentProg = mobileProgressMotion.get();
 
-      // Горизонтальный свайп по карточкам: прямое отзывчивое следование за пальцем
+      // Горизонтальный свайп по карточкам: прямое отзывчивое следование за пальцем (~200px на карточку)
       if (absX > absY && absX > 6) {
         isHorizontalGesture = true;
         didMoveCards = true;
         if (e.cancelable) e.preventDefault();
-        const nextProg = Math.max(0, Math.min(1, touchStartProg + dx / 800));
+        const nextProg = Math.max(0, Math.min(1, touchStartProg + dx / (200 * totalSteps)));
         mobileProgressMotion.set(nextProg);
         return;
       }
@@ -101,13 +102,13 @@ export const Advantages: React.FC = () => {
         if (dy > 0 && currentProg < 0.985) {
           didMoveCards = true;
           if (e.cancelable) e.preventDefault();
-          const nextProg = Math.min(1, touchStartProg + dy / 550);
+          const nextProg = Math.min(1, touchStartProg + dy / (140 * totalSteps));
           mobileProgressMotion.set(nextProg);
           return;
         } else if (dy < 0 && currentProg > 0.015) {
           didMoveCards = true;
           if (e.cancelable) e.preventDefault();
-          const nextProg = Math.max(0, touchStartProg - Math.abs(dy) / 550);
+          const nextProg = Math.max(0, touchStartProg - Math.abs(dy) / (140 * totalSteps));
           mobileProgressMotion.set(nextProg);
           return;
         }
@@ -132,28 +133,28 @@ export const Advantages: React.FC = () => {
       // Динамичный довод к карточке при завершении жеста:
       if (absX > absY && absX > 20) {
         if (dx > 20) {
-          mobileProgressMotion.set(Math.min(1, Math.ceil(currentProg * 4) / 4));
+          mobileProgressMotion.set(Math.min(1, Math.ceil(currentProg * totalSteps) / totalSteps));
         } else if (dx < -20) {
-          mobileProgressMotion.set(Math.max(0, Math.floor(currentProg * 4) / 4));
+          mobileProgressMotion.set(Math.max(0, Math.floor(currentProg * totalSteps) / totalSteps));
         } else {
-          mobileProgressMotion.set(Math.round(currentProg * 4) / 4);
+          mobileProgressMotion.set(Math.round(currentProg * totalSteps) / totalSteps);
         }
         return;
       }
 
       if (absY > absX && absY > 20) {
         if (dy > 20 && currentProg < 0.985) {
-          mobileProgressMotion.set(Math.min(1, Math.ceil(currentProg * 4) / 4));
+          mobileProgressMotion.set(Math.min(1, Math.ceil(currentProg * totalSteps) / totalSteps));
         } else if (dy < -20 && currentProg > 0.015) {
-          mobileProgressMotion.set(Math.max(0, Math.floor(currentProg * 4) / 4));
+          mobileProgressMotion.set(Math.max(0, Math.floor(currentProg * totalSteps) / totalSteps));
         } else {
-          mobileProgressMotion.set(Math.round(currentProg * 4) / 4);
+          mobileProgressMotion.set(Math.round(currentProg * totalSteps) / totalSteps);
         }
         return;
       }
 
       if (currentProg > 0.03 && currentProg < 0.97) {
-        mobileProgressMotion.set(Math.round(currentProg * 4) / 4);
+        mobileProgressMotion.set(Math.round(currentProg * totalSteps) / totalSteps);
       }
     };
 
@@ -173,8 +174,8 @@ export const Advantages: React.FC = () => {
       if (delta > 0) {
         if (currentProg < 0.985) {
           if (e.cancelable) e.preventDefault();
-          // Отзывчивый лёгкий ход: ~180px скролла на одну карточку (720px на 4 перехода)
-          const nextProg = Math.min(1, currentProg + Math.abs(delta) / 720);
+          // Отзывчивый лёгкий ход: ~180px скролла на одну карточку
+          const nextProg = Math.min(1, currentProg + Math.abs(delta) / (180 * totalSteps));
           mobileProgressMotion.set(nextProg);
 
           // Мягкий довод к карточке при остановке прокрутки:
@@ -182,12 +183,10 @@ export const Advantages: React.FC = () => {
           wheelSnapTimer = setTimeout(() => {
             const p = mobileProgressMotion.get();
             if (p > 0.03 && p < 0.97) {
-              mobileProgressMotion.set(Math.round(p * 4) / 4);
+              mobileProgressMotion.set(Math.round(p * totalSteps) / totalSteps);
             }
           }, 90);
           return;
-        } else {
-          // Уже на 5-й карточке: скролл свободно продолжается вниз к Услугам
         }
       }
 
@@ -195,19 +194,17 @@ export const Advantages: React.FC = () => {
       if (delta < 0) {
         if (currentProg > 0.015) {
           if (e.cancelable) e.preventDefault();
-          const nextProg = Math.max(0, currentProg - Math.abs(delta) / 720);
+          const nextProg = Math.max(0, currentProg - Math.abs(delta) / (180 * totalSteps));
           mobileProgressMotion.set(nextProg);
 
           if (wheelSnapTimer) clearTimeout(wheelSnapTimer);
           wheelSnapTimer = setTimeout(() => {
             const p = mobileProgressMotion.get();
             if (p > 0.03 && p < 0.97) {
-              mobileProgressMotion.set(Math.round(p * 4) / 4);
+              mobileProgressMotion.set(Math.round(p * totalSteps) / totalSteps);
             }
           }, 90);
           return;
-        } else {
-          // Уже на 1-й карточке: скролл свободно продолжается вверх к Кейсам
         }
       }
     };
@@ -226,36 +223,12 @@ export const Advantages: React.FC = () => {
       window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('touchcancel', handleTouchEnd);
     };
-  }, [isMobile, mobileProgressMotion]);
-
-  // Появление карточек на десктопе:
-  const cardOpacity0 = useTransform(smoothProgress, [0.00, 0.12], [0, 1]);
-  const cardY0 = useTransform(smoothProgress, [0.00, 0.12], [36, 0]);
-
-  const cardOpacity1 = useTransform(smoothProgress, [0.09, 0.21], [0, 1]);
-  const cardY1 = useTransform(smoothProgress, [0.09, 0.21], [36, 0]);
-
-  const cardOpacity2 = useTransform(smoothProgress, [0.18, 0.30], [0, 1]);
-  const cardY2 = useTransform(smoothProgress, [0.18, 0.30], [36, 0]);
-
-  const cardOpacity3 = useTransform(smoothProgress, [0.27, 0.39], [0, 1]);
-  const cardY3 = useTransform(smoothProgress, [0.27, 0.39], [36, 0]);
-
-  const cardOpacity4 = useTransform(smoothProgress, [0.42, 0.62], [0, 1]);
-  const cardY4 = useTransform(smoothProgress, [0.42, 0.62], [36, 0]);
-
-  const cardAnimations = [
-    { opacity: cardOpacity0, y: cardY0 },
-    { opacity: cardOpacity1, y: cardY1 },
-    { opacity: cardOpacity2, y: cardY2 },
-    { opacity: cardOpacity3, y: cardY3 },
-    { opacity: cardOpacity4, y: cardY4 },
-  ];
+  }, [isMobile, mobileProgressMotion, totalSteps]);
 
   // Горизонтальный сдвиг ленты на десктопе:
   const desktopTrackProgress = useTransform(
     smoothProgress,
-    [0.36, 0.92],
+    [0.25, 0.92],
     [0, 1]
   );
 
@@ -263,11 +236,14 @@ export const Advantages: React.FC = () => {
     const clamped = Math.min(1, Math.max(0, t));
     const ease = -(Math.cos(Math.PI * clamped) - 1) / 2;
     if (screenWidth >= 1400) {
-      return `calc(${-25 * ease}% - ${8 * ease}px)`;
+      const extraCols = Math.max(0, advantages.length - 4);
+      return `calc(${-25 * extraCols * ease}% - ${8 * extraCols * ease}px)`;
     } else if (screenWidth >= 1024) {
-      return `calc(${-25 * ease}% - ${2.5 * ease}px)`;
+      const extraCols = Math.max(0, advantages.length - 4);
+      return `calc(${-25 * extraCols * ease}% - ${2.5 * extraCols * ease}px)`;
     } else if (screenWidth >= 744) {
-      return `calc(${-66.667 * ease}% - ${10 * ease}px)`;
+      const extraCols = Math.max(0, advantages.length - 3);
+      return `calc(${-(100 / 3) * extraCols * ease}% - ${5 * extraCols * ease}px)`;
     } else {
       return `0px`;
     }
@@ -276,18 +252,22 @@ export const Advantages: React.FC = () => {
   // Плавный физический трансформ для ленты карточек на мобилке (0..1):
   const mobileTrackTransform = useTransform(smoothMobileProgress, (t) => {
     const clamped = Math.max(0, Math.min(1, t));
-    const val = clamped * 4; // 0..4
+    const val = clamped * totalSteps;
     const i = Math.floor(val);
     const frac = val - i;
-    if (i >= 4) return 'calc(-290% - 48px)';
 
-    const basePercents = [0, -78, -156, -234, -290];
-    const basePixels = [0, -12, -24, -36, -48];
+    const getPercent = (idx: number) =>
+      idx >= totalSteps ? -(advantages.length * 78 - 100) : -78 * idx;
+    const getPx = (idx: number) => -12 * Math.min(idx, totalSteps);
 
-    const p1 = basePercents[i];
-    const p2 = basePercents[i + 1];
-    const px1 = basePixels[i];
-    const px2 = basePixels[i + 1];
+    if (i >= totalSteps) {
+      return `calc(${getPercent(totalSteps)}% + ${getPx(totalSteps)}px)`;
+    }
+
+    const p1 = getPercent(i);
+    const p2 = getPercent(i + 1);
+    const px1 = getPx(i);
+    const px2 = getPx(i + 1);
 
     const currentP = p1 + (p2 - p1) * frac;
     const currentPx = px1 + (px2 - px1) * frac;
@@ -297,20 +277,11 @@ export const Advantages: React.FC = () => {
 
   const trackTransform = isMobile ? mobileTrackTransform : desktopTrackTransform;
 
-  // Акцентное увеличение иконки при въезде карточки в фокус (десктоп):
-  const imgScale0 = useTransform(smoothProgress, [0.00, 0.08, 0.14], [0.92, 1.08, 1]);
-  const imgScale1 = useTransform(smoothProgress, [0.09, 0.17, 0.23], [0.92, 1.08, 1]);
-  const imgScale2 = useTransform(smoothProgress, [0.18, 0.26, 0.32], [0.92, 1.08, 1]);
-  const imgScale3 = useTransform(smoothProgress, [0.27, 0.35, 0.41], [0.92, 1.08, 1]);
-  const imgScale4 = useTransform(smoothProgress, [0.42, 0.52, 0.62], [0.92, 1.08, 1]);
-
-  const imgScales = [imgScale0, imgScale1, imgScale2, imgScale3, imgScale4];
-
   return (
     <div
       ref={scrollTriggerRef}
       id="advantages"
-      className="relative bg-[#FEF9F4] max-[743px]:h-auto min-[744px]:h-[170vh] min-[1400px]:h-[185vh]"
+      className="relative bg-[#FEF9F4] max-[743px]:h-auto min-[744px]:h-[210vh] min-[1400px]:h-[225vh]"
     >
       {/* Пин-контейнер: без растяжения на 100vh, чтобы не создавать пустых отступов сверху и снизу */}
       <div className="relative min-[744px]:sticky min-[744px]:top-0 w-full flex flex-col justify-start z-10 pt-[50px] min-[744px]:pt-[85px] lg:pt-[100px] min-[1400px]:pt-[115px] pb-[10px] min-[744px]:pb-[20px] overflow-x-clip">
@@ -337,47 +308,46 @@ export const Advantages: React.FC = () => {
               style={{ x: trackTransform }}
               className="flex flex-nowrap items-stretch gap-[12px] min-[744px]:max-[1023px]:gap-[15px] lg:max-[1399px]:gap-[10px] min-[1400px]:gap-[32px] will-change-transform select-none"
             >
-              {advantages.map((adv, index) => {
-                const cardAnim = cardAnimations[index] || cardAnimations[cardAnimations.length - 1];
-                const imgScale = imgScales[index] || imgScales[imgScales.length - 1];
-                return (
-                  <motion.div
-                    key={index}
-                    onClick={() => {
-                      if (isMobile) {
-                        mobileProgressMotion.set(index / 4);
-                      }
-                    }}
-                    style={{
-                      opacity: isMobile ? 1 : cardAnim.opacity,
-                      y: isMobile ? 0 : cardAnim.y,
-                    }}
-                    className="relative shrink-0 w-[78%] cursor-pointer select-none max-[743px]:aspect-auto max-[743px]:h-auto min-[744px]:max-[1023px]:w-[calc((100%-30px)/3)] lg:max-[1399px]:w-[calc((100%-30px)/4)] min-[1400px]:w-[calc((100%-96px)/4)] min-[1400px]:aspect-square flex flex-col justify-between items-start text-left will-change-[transform,opacity] transform-gpu bg-[#FA7250] p-[18px] max-[743px]:pb-[36px] min-[744px]:p-6 min-[1200px]:p-7 min-[1400px]:p-8 rounded-none"
-                  >
-                    {/* Иконка преимущества */}
-                    <div className="relative z-10 h-[105px] min-[390px]:h-[115px] min-[744px]:h-[125px] lg:h-[140px] min-[1400px]:h-[150px] min-[1600px]:h-[185px] mb-[10px] min-[744px]:mb-[16px] min-[1400px]:mb-[20px] w-full flex items-center justify-center shrink-0">
-                      <motion.img
-                        style={{ scale: isMobile ? 1 : imgScale }}
-                        src={adv.icon}
-                        alt={adv.title}
-                        loading="lazy"
-                        decoding="async"
-                        className="max-h-full max-w-full w-auto h-auto object-contain select-none pointer-events-none will-change-transform transform-gpu"
-                      />
-                    </div>
+              {advantages.map((adv, index) => (
+                <motion.div
+                  key={adv.title}
+                  onClick={() => {
+                    if (isMobile) {
+                      mobileProgressMotion.set(index / totalSteps);
+                    }
+                  }}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.12 }}
+                  transition={{
+                    duration: 0.65,
+                    delay: Math.min(index, 3) * 0.07,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="relative shrink-0 w-[78%] cursor-pointer select-none max-[743px]:aspect-auto max-[743px]:h-auto min-[744px]:max-[1023px]:w-[calc((100%-30px)/3)] lg:max-[1399px]:w-[calc((100%-30px)/4)] min-[1400px]:w-[calc((100%-96px)/4)] min-[1400px]:aspect-square flex flex-col justify-start items-start text-left will-change-[transform,opacity] transform-gpu bg-[#FEF9F4] border border-[#FA7250] p-[18px] max-[743px]:pb-[32px] min-[744px]:p-6 min-[1200px]:p-7 min-[1400px]:p-8 rounded-none"
+                >
+                  {/* Иконка преимущества фиксированной высоты, чтобы заголовки всех карточек начинались строго на одной общей верхней линии */}
+                  <div className="relative z-10 h-[105px] min-[390px]:h-[115px] min-[744px]:h-[125px] lg:h-[135px] min-[1400px]:h-[145px] min-[1600px]:h-[175px] mb-[14px] min-[744px]:mb-[20px] min-[1400px]:mb-[24px] w-full flex items-center justify-center shrink-0">
+                    <img
+                      src={adv.icon}
+                      alt={adv.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="max-h-full max-w-full w-auto h-auto object-contain select-none pointer-events-none"
+                    />
+                  </div>
 
-                    {/* Текстовая часть: нижнее расстояние увеличено в 2 раза (pb-[36px] против pt-[18px]) */}
-                    <div className="w-full min-w-0 flex flex-col items-start text-left gap-[6px] min-[744px]:gap-[15px]">
-                      <CardTitle className="text-left !text-[#FEF9F4]">
-                        {adv.title}
-                      </CardTitle>
-                      <BodyText className="text-left !text-[#FEF9F4] break-words">
-                        {adv.description}
-                      </BodyText>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                  {/* Текстовая часть: все заголовки карточек выровнены по одной верхней направляющей */}
+                  <div className="w-full min-w-0 flex flex-col items-start text-left gap-[8px] min-[744px]:gap-[12px] min-[1400px]:gap-[15px]">
+                    <CardTitle className="text-left">
+                      {adv.title}
+                    </CardTitle>
+                    <BodyText className="text-left break-words">
+                      {adv.description}
+                    </BodyText>
+                  </div>
+                </motion.div>
+              ))}
             </motion.div>
           </motion.div>
         </section>

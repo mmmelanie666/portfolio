@@ -44,6 +44,21 @@ export const advantages = [
     icon: '/svg/advantages/pic-3.png',
   },
   {
+    title: 'Прозрачный процесс',
+    description: 'Я работаю по договору, выполняю свои обязательства и соблюдаю сроки, не пропадаю и не бросаю проекты, держу заказчика в курсе всех процессов.',
+    icon: '/svg/advantages/pic-4.png',
+  },
+  {
+    title: 'Фокус на задаче и смыслах',
+    description: 'Делаю не просто красивую картинку, а для начала провожу глубокую аналитику, чтобы сайт стал инструментом и решал задачу вашего бизнеса.',
+    icon: '/svg/advantages/pic-5.svg',
+  },
+  {
+    title: 'Адаптивы',
+    description: '80% пользователей смотрят сайт с телефона, поэтому я уделяю должное внимание адаптивной верстке макетов, чтобы ваш сайт был красивым и удобным не только с компьютера, но и с телефона.',
+    icon: '/svg/advantages/pic-6.svg',
+  },
+  {
     title: 'Код',
     description: 'Сделаю стандартный сайт на Тильде/Вебфлоу уникальным за счет индивидуальных модификаций.',
     icon: '/svg/advantages/pic.png',
@@ -52,11 +67,6 @@ export const advantages = [
     title: 'Нейросети',
     description: 'Заменяю банальные стоки уникальной графикой и кинематографичными AI-видео. Сделаю вам полностью уникальный проект.',
     icon: '/svg/advantages/pic-1.png',
-  },
-  {
-    title: 'Прозрачный процесс',
-    description: 'Я работаю по договору, выполняю свои обязательства и соблюдаю сроки, не пропадаю и не бросаю проекты, держу заказчика в курсе всех процессов.',
-    icon: '/svg/advantages/pic-4.png',
   },
 ];
 
@@ -97,10 +107,10 @@ export interface CaseItem {
 
 export const cases: CaseItem[] = [
   {
-    id: 1,
-    title: 'МАХОВИК ПРОСТРАНСТВА',
-    image: '/cases/case-1.jpg?v=3',
-    link: 'https://outerspacer.tilda.ws/',
+    id: 4,
+    title: 'САЙТ ДЛЯ ФОТОГРАФА',
+    image: '/cases/case-4.jpg?v=2',
+    link: 'https://vaniosovaph.ru/',
   },
   {
     id: 2,
@@ -116,10 +126,10 @@ export const cases: CaseItem[] = [
     link: 'https://academy.hybrid.ai/',
   },
   {
-    id: 4,
-    title: 'САЙТ ДЛЯ ФОТОГРАФА',
-    image: '/cases/case-4.jpg',
-    link: 'https://vaniosovaph.ru/',
+    id: 1,
+    title: 'МАХОВИК ПРОСТРАНСТВА',
+    image: '/cases/case-1.jpg?v=3',
+    link: 'https://outerspacer.tilda.ws/',
   },
 ];
 
