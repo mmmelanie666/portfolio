@@ -121,10 +121,10 @@ export const Header: React.FC = () => {
           isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <nav className="flex flex-col items-center gap-10 text-black font-bold text-[24px] min-[744px]:text-[32px] leading-[1.07] uppercase">
-          <a href="#services" onClick={closeMenu} className="hover:text-[#FA7250] transition-colors">Услуги</a>
-          <a href="#process" onClick={closeMenu} className="hover:text-[#FA7250] transition-colors">Процесс</a>
-          <a href="#cases" onClick={closeMenu} className="hover:text-[#FA7250] transition-colors">Примеры работ</a>
+        <nav className="flex flex-col items-center gap-6 text-black font-bold text-[24px] min-[744px]:text-[32px] leading-[1.07] uppercase">
+          <a href="#services" onClick={closeMenu} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-3 hover:text-[#FA7250] transition-colors">Услуги</a>
+          <a href="#process" onClick={closeMenu} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-3 hover:text-[#FA7250] transition-colors">Процесс</a>
+          <a href="#cases" onClick={closeMenu} className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center px-3 hover:text-[#FA7250] transition-colors">Примеры работ</a>
         </nav>
 
         <a

@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Manrope", sans-serif;
+  --font-sans: 'PT Sans', sans-serif;
+  --font-serif: 'PT Sans', sans-serif;
+  --font-mono: 'PT Sans', sans-serif;
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -9,11 +11,23 @@
   --breakpoint-2xl: 1536px;
 }
 
+*,
+*::before,
+*::after,
+html,
+body,
+button,
+input,
+select,
+textarea,
+.font-sans {
+  font-family: 'PT Sans', sans-serif !important;
+}
+
 html,
 body,
 .font-sans {
   scroll-behavior: smooth;
-  font-family: "Manrope", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -240,5 +254,476 @@ body,
     width: 250px !important;
     height: 215px !important;
     max-width: none !important;
+  }
+}
+
+/* Кастомный ретро-скроллбар и примитивы Windows 98 / Me */
+.win98-root,
+.win98-root * {
+  font-family: 'PT Sans', sans-serif !important;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+.win98-root {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.32;
+  color: #000000;
+  cursor: url('/images/win98/cursor-pointer.png') 6 1, pointer;
+}
+
+.crt-screen-cursor {
+  cursor: url('/images/win98/cursor-arrow.png') 1 1, default;
+}
+
+.win98-pointer,
+.win98-root button,
+.win98-root a,
+.win98-root label,
+.win98-root [role="button"],
+.win98-root input[type="radio"],
+.win98-root input[type="checkbox"] {
+  cursor: url('/images/win98/cursor-pointer.png') 6 1, pointer;
+}
+
+.win98-pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.win98-outset {
+  background-color: #c0c0c0;
+  box-shadow:
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #ffffff,
+    inset -2px -2px 0 #808080,
+    inset 2px 2px 0 #dfdfdf;
+}
+
+.win98-sunken {
+  background-color: #ffffff;
+  box-shadow:
+    inset -1px -1px 0 #ffffff,
+    inset 1px 1px 0 #808080,
+    inset -2px -2px 0 #dfdfdf,
+    inset 2px 2px 0 #000000;
+}
+
+.win98-status-cell {
+  background-color: #c0c0c0;
+  box-shadow:
+    inset -1px -1px 0 #ffffff,
+    inset 1px 1px 0 #808080;
+}
+
+.win98-btn {
+  background-color: #c0c0c0;
+  color: #000000;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #ffffff,
+    inset -2px -2px 0 #808080,
+    inset 2px 2px 0 #dfdfdf;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+@media (hover: hover) {
+  .win98-btn:hover:not(:active):not(.is-pressed) {
+    background-color: #d8d8d8;
+    color: #000080;
+    box-shadow:
+      inset -1px -1px 0 #000080,
+      inset 1px 1px 0 #ffffff,
+      inset -2px -2px 0 #5a6a90,
+      inset 2px 2px 0 #f6f6f6;
+  }
+}
+
+.win98-btn:active,
+.win98-btn.is-pressed {
+  box-shadow:
+    inset -1px -1px 0 #ffffff,
+    inset 1px 1px 0 #000000,
+    inset -2px -2px 0 #dfdfdf,
+    inset 2px 2px 0 #808080;
+  padding-top: 1px;
+  padding-left: 1px;
+}
+
+.win98-cta-orange {
+  background-color: #d9663d;
+  color: #160a04;
+  font-weight: 400;
+  border: none;
+  border-radius: 0;
+  text-shadow: 0 1px 0 rgba(255, 196, 168, 0.34);
+  box-shadow:
+    inset 1px 1px 0 #f29674,
+    inset 2px 2px 0 #e67b55,
+    inset -1px -1px 0 #6e2811,
+    inset -2px -2px 0 #9f4020,
+    0 2px 0 #4a1a0a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: filter 0.12s ease;
+}
+
+@media (hover: hover) {
+  .win98-cta-orange:hover:not(:active) {
+    filter: brightness(1.05);
+  }
+}
+
+.win98-cta-orange:active {
+  box-shadow:
+    inset 1px 1px 0 #6e2811,
+    inset 2px 2px 0 #9f4020,
+    inset -1px -1px 0 #eba083;
+  transform: translateY(2px);
+}
+
+.win98-btn-default {
+  outline: 1px solid #000000;
+  outline-offset: -1px;
+  position: relative;
+}
+
+.win98-btn-default::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px dotted #000000;
+  pointer-events: none;
+}
+
+.win98-task-active {
+  background-color: #dfdfdf;
+  background-image:
+    linear-gradient(45deg, #c0c0c0 25%, transparent 25%),
+    linear-gradient(-45deg, #c0c0c0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #c0c0c0 75%),
+    linear-gradient(-45deg, transparent 75%, #c0c0c0 75%);
+  background-size: 2px 2px;
+  background-position: 0 0, 0 1px, 1px -1px, -1px 0;
+  box-shadow:
+    inset -1px -1px 0 #ffffff,
+    inset 1px 1px 0 #000000,
+    inset -2px -2px 0 #dfdfdf,
+    inset 2px 2px 0 #808080;
+  padding-top: 1px;
+  padding-left: 1px;
+}
+
+.win98-groupbox {
+  border: 1px solid #808080;
+  box-shadow:
+    inset 1px 1px 0 #ffffff,
+    1px 1px 0 #ffffff;
+  background-color: #c0c0c0;
+}
+
+.win98-tab {
+  background-color: #c0c0c0;
+  color: #000000;
+  border-radius: 2px 2px 0 0;
+  box-shadow:
+    inset 1px 1px 0 #ffffff,
+    inset -1px 0 0 #000000,
+    inset 2px 2px 0 #dfdfdf,
+    inset -2px 0 0 #808080;
+  position: relative;
+  top: 1px;
+}
+
+.win98-tab.is-active {
+  z-index: 2;
+  top: 0;
+  padding-bottom: 4px;
+  margin-bottom: -2px;
+  border-bottom: 2px solid #c0c0c0;
+}
+
+.win98-tabpanel {
+  background-color: #c0c0c0;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #ffffff,
+    inset -2px -2px 0 #808080,
+    inset 2px 2px 0 #dfdfdf;
+}
+
+.win98-divider-h {
+  height: 2px;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #ffffff;
+}
+
+.win98-divider-v {
+  width: 2px;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+}
+
+.retro-scrollbar::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+
+.retro-scrollbar::-webkit-scrollbar-track {
+  background-color: #dfdfdf;
+  background-image:
+    linear-gradient(45deg, #c0c0c0 25%, transparent 25%),
+    linear-gradient(-45deg, #c0c0c0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #c0c0c0 75%),
+    linear-gradient(-45deg, transparent 75%, #c0c0c0 75%);
+  background-size: 2px 2px;
+  background-position: 0 0, 0 1px, 1px -1px, -1px 0;
+}
+
+.retro-scrollbar::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  box-shadow:
+    inset -1px -1px 0 #000000,
+    inset 1px 1px 0 #ffffff,
+    inset -2px -2px 0 #808080,
+    inset 2px 2px 0 #dfdfdf;
+}
+
+.retro-scrollbar::-webkit-scrollbar-thumb:active {
+  background: #b8b8b8;
+  box-shadow:
+    inset -1px -1px 0 #ffffff,
+    inset 1px 1px 0 #000000,
+    inset -2px -2px 0 #dfdfdf,
+    inset 2px 2px 0 #808080;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes crtTvCollapseGreen {
+  0% {
+    transform: scale(1, 1);
+    filter: brightness(1) contrast(1) saturate(1);
+    opacity: 1;
+  }
+  28% {
+    transform: scale(1.03, 0.012);
+    filter: brightness(3.4) contrast(1.8) saturate(2);
+    opacity: 1;
+  }
+  72% {
+    transform: scale(0.016, 0.012);
+    filter: brightness(5.5) contrast(1.8) saturate(2.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0, 0);
+    filter: brightness(6);
+    opacity: 0;
+  }
+}
+
+@keyframes crtTvTurnOnGreen {
+  0% {
+    transform: scale(0.014, 0.012);
+    filter: brightness(5.5) contrast(1.7) saturate(2.2);
+    opacity: 0.9;
+  }
+  34% {
+    transform: scale(1.02, 0.014);
+    filter: brightness(4.2) contrast(1.6) saturate(2);
+    opacity: 1;
+  }
+  74% {
+    transform: scale(1, 1.012);
+    filter: brightness(1.45) contrast(1.1) saturate(1.25);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 1);
+    filter: brightness(1) contrast(1) saturate(1);
+    opacity: 1;
+  }
+}
+
+@keyframes crtGreenFlashOff {
+  0% {
+    opacity: 0;
+  }
+  24% {
+    opacity: 0.92;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes crtGreenFlashOn {
+  0% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 0.92;
+  }
+  78% {
+    opacity: 0.38;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes crtAfterglowPulseGreen {
+  0% {
+    transform: scale(2.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.36;
+  }
+}
+
+@keyframes lampBulbFlicker {
+  0%, 42%, 52%, 84%, 92%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  44% {
+    opacity: 0.42;
+    transform: scale(0.95);
+  }
+  46% {
+    opacity: 0.94;
+    transform: scale(1.01);
+  }
+  48.5% {
+    opacity: 0.34;
+    transform: scale(0.93);
+  }
+  50% {
+    opacity: 0.88;
+    transform: scale(1);
+  }
+  87% {
+    opacity: 0.52;
+    transform: scale(0.96);
+  }
+  89% {
+    opacity: 0.95;
+    transform: scale(1.01);
+  }
+}
+
+.crt-tv-collapsing-green {
+  animation: crtTvCollapseGreen 0.58s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: 50% 50%;
+}
+
+.crt-tv-turning-on-green {
+  animation: crtTvTurnOnGreen 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: 50% 50%;
+}
+
+.crt-green-flash-overlay {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20, 83, 45, 0.55) 0%,
+      rgba(74, 222, 128, 0.92) 46%,
+      rgba(220, 252, 231, 0.98) 50%,
+      rgba(74, 222, 128, 0.92) 54%,
+      rgba(20, 83, 45, 0.55) 100%
+    ),
+    radial-gradient(
+      ellipse at center,
+      rgba(187, 247, 208, 0.95) 0%,
+      rgba(34, 197, 94, 0.88) 48%,
+      rgba(20, 83, 45, 0.78) 100%
+    );
+}
+
+.crt-green-flash-off {
+  animation: crtGreenFlashOff 0.58s ease-out forwards;
+}
+
+.crt-green-flash-on {
+  animation: crtGreenFlashOn 0.68s ease-out forwards;
+}
+
+.crt-afterglow-dot {
+  animation: crtAfterglowPulseGreen 1.25s ease-out forwards;
+}
+
+.lamp-bulb-flicker {
+  animation: lampBulbFlicker 9s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+@keyframes stickyZoomIn {
+  0% {
+    opacity: 0;
+    transform: translate(22%, -22%) scale(0.32) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(-1.5deg);
+  }
+}
+
+@keyframes stickyBackdropIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.sticky-zoom-in {
+  animation: stickyZoomIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sticky-backdrop-in {
+  animation: stickyBackdropIn 0.2s ease-out forwards;
+}
+
+.h-screen-dvh {
+  height: 100vh;
+  height: 100dvh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lamp-bulb-flicker {
+    animation: none;
+  }
+}
+
+@media (max-width: 1031px) {
+  .win98-root button,
+  .win98-root .win98-btn,
+  .win98-root .win98-cta-orange,
+  .win98-root .win98-task-active {
+    min-width: 44px;
+    min-height: 44px;
   }
 }

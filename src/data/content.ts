@@ -101,6 +101,7 @@ export interface CaseItem {
   id: number;
   title: string;
   image: string;
+  v2Image?: string;
   link: string;
   fullImage?: string;
 }
@@ -110,12 +111,14 @@ export const cases: CaseItem[] = [
     id: 4,
     title: 'САЙТ ДЛЯ ФОТОГРАФА',
     image: '/cases/case-4.jpg?v=2',
+    v2Image: '/cases/v2-case-4.jpg',
     link: 'https://vaniosovaph.ru/',
   },
   {
     id: 2,
     title: "HYBRID CONF' 25",
     image: '/cases/case-2.jpg',
+    v2Image: '/cases/v2-case-2.jpg',
     fullImage: '/cases/hybrid-conf-full.jpg',
     link: '#',
   },
@@ -123,12 +126,14 @@ export const cases: CaseItem[] = [
     id: 3,
     title: 'ВСЁ О PROGRAMMATIC',
     image: '/cases/case-3.jpg',
+    v2Image: '/cases/v2-case-3.jpg',
     link: 'https://academy.hybrid.ai/',
   },
   {
     id: 1,
     title: 'МАХОВИК ПРОСТРАНСТВА',
     image: '/cases/case-1.jpg?v=3',
+    v2Image: '/cases/v2-case-1.jpg',
     link: 'https://outerspacer.tilda.ws/',
   },
 ];

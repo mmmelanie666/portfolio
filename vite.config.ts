@@ -6,6 +6,9 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    target: 'es2020',
+  },
   server: {
     host: true,
     allowedHosts: true,

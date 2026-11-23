@@ -1,24 +1,19 @@
-import { Header } from '@/sections/Header';
-import { Hero } from '@/sections/Hero';
-import { Advantages } from '@/sections/Advantages';
-import { Services } from '@/sections/Services';
-import { Process } from '@/sections/Process';
-import { Cases } from '@/sections/Cases';
-import { Footer } from '@/sections/Footer';
+import { Suspense, lazy, useState } from 'react';
+import { RetroComputerV2 } from '@/components/RetroComputerV2';
+
+const LegacyV1Page = lazy(() => import('./LegacyV1Page'));
 
 function App() {
+  const [version, setVersion] = useState<'v1' | 'v2'>('v2');
+
+  if (version === 'v2') {
+    return <RetroComputerV2 onSwitchVersion={() => setVersion('v1')} />;
+  }
+
   return (
-    <div className="min-h-screen bg-[#FEF9F4] text-slate-900 font-sans selection:bg-coral-200 selection:text-coral-900">
-      <Header />
-      <main>
-        <Hero />
-        <Advantages />
-        <Services />
-        <Process />
-        <Cases />
-      </main>
-      <Footer />
-    </div>
+    <Suspense fallback={<div className="min-h-screen bg-[#FEF9F4]" />}>
+      <LegacyV1Page onSwitchToV2={() => setVersion('v2')} />
+    </Suspense>
   );
 }
 

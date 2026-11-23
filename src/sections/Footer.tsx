@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
           href={footerContent.telegramLink} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="btn-blur-hover bg-[#FA7250] text-[#FEF9F4] px-8 py-3.5 min-[744px]:px-14 min-[744px]:py-5 font-bold text-[18px] min-[744px]:text-[32px] leading-[1.07] uppercase rounded-none inline-flex items-center justify-center"
+          className="btn-blur-hover bg-[#FA7250] text-[#FEF9F4] min-h-[44px] px-8 py-3.5 min-[744px]:px-14 min-[744px]:py-5 font-bold text-[18px] min-[744px]:text-[32px] leading-[1.07] uppercase rounded-none inline-flex items-center justify-center"
         >
           {footerContent.buttonText}
         </motion.a>
@@ -50,7 +50,7 @@ export const Footer: React.FC = () => {
               href={social.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#FA7250] transition-colors"
+              className="max-[1031px]:min-h-[44px] max-[1031px]:min-w-[44px] inline-flex items-center justify-center hover:text-[#FA7250] transition-colors"
             >
               {social.title}
             </a>

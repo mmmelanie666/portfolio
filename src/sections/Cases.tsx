@@ -131,7 +131,7 @@ export const Cases: React.FC = () => {
                     href={selectedCase.fullImage}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hidden sm:inline-flex items-center gap-1.5 text-[13px] font-bold text-[#FA7250] hover:text-[#EB4F2E] transition-colors"
+                    className="hidden sm:inline-flex items-center gap-1.5 max-[1031px]:min-h-[44px] max-[1031px]:min-w-[44px] max-[1031px]:px-2 text-[13px] font-bold text-[#FA7250] hover:text-[#EB4F2E] transition-colors"
                   >
                     В полный размер <ExternalLink className="w-3.5 h-3.5" />
                   </a>
@@ -139,7 +139,7 @@ export const Cases: React.FC = () => {
                   <button
                     onClick={() => setSelectedCase(null)}
                     aria-label="Закрыть"
-                    className="w-9 h-9 rounded-full bg-[#FA7250] text-[#FEF9F4] flex items-center justify-center hover:bg-[#EB4F2E] transition-colors cursor-pointer"
+                    className="w-11 h-11 min-[1032px]:w-9 min-[1032px]:h-9 shrink-0 rounded-full bg-[#FA7250] text-[#FEF9F4] flex items-center justify-center hover:bg-[#EB4F2E] transition-colors cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
