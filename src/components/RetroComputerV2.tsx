@@ -733,10 +733,16 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
   }, [isMobile]);
   const dragStateRef = useRef<{
     id: WindowId;
+    pointerId: number;
+    isMobile: boolean;
     startX: number;
     startY: number;
     origDxPx: number;
     origDyPx: number;
+    minDx: number;
+    maxDx: number;
+    minDy: number;
+    maxDy: number;
   } | null>(null);
 
   useLayoutEffect(() => {
@@ -902,18 +908,19 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
   useEffect(() => {
     const handlePointerMove = (e: PointerEvent) => {
       const drag = dragStateRef.current;
-      if (!drag) return;
+      if (!drag || e.pointerId !== drag.pointerId) return;
 
-      const scaleX = Math.max(0.2, crtScaleRef.current.x);
-      const scaleY = Math.max(0.2, crtScaleRef.current.y);
+      const scaleX = drag.isMobile ? 1 : Math.max(0.2, crtScaleRef.current.x);
+      const scaleY = drag.isMobile ? 1 : Math.max(0.2, crtScaleRef.current.y);
       const dx = (e.clientX - drag.startX) / scaleX;
       const dy = (e.clientY - drag.startY) / scaleY;
 
       setWindows((prev) => {
         const w = prev[drag.id];
         if (!w || w.isMaximized) return prev;
-        const clampedDx = Math.max(-140, Math.min(140, drag.origDxPx + dx));
-        const clampedDy = Math.max(-90, Math.min(90, drag.origDyPx + dy));
+        const clampedDx = Math.round(Math.max(drag.minDx, Math.min(drag.maxDx, drag.origDxPx + dx)));
+        const clampedDy = Math.round(Math.max(drag.minDy, Math.min(drag.maxDy, drag.origDyPx + dy)));
+        if (w.dxPx === clampedDx && w.dyPx === clampedDy) return prev;
         return {
           ...prev,
           [drag.id]: {
@@ -925,15 +932,19 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
       });
     };
 
-    const handlePointerUp = () => {
-      dragStateRef.current = null;
+    const handlePointerEnd = (e: PointerEvent) => {
+      if (dragStateRef.current?.pointerId === e.pointerId) {
+        dragStateRef.current = null;
+      }
     };
 
     window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointerup', handlePointerEnd);
+    window.addEventListener('pointercancel', handlePointerEnd);
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointerup', handlePointerEnd);
+      window.removeEventListener('pointercancel', handlePointerEnd);
     };
   }, []);
 
@@ -1190,18 +1201,52 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             onPointerDown={(e) => {
               e.stopPropagation();
               if (!isFocused || win.isMinimized) focusWindow(win.id);
-              if (mobile || isFullBox) return;
+              if (isFullBox) return;
+              if (e.pointerType === 'mouse' && e.button !== 0) return;
+              if ((e.target as HTMLElement).closest('button')) return;
+
+              let minDx = -140;
+              let maxDx = 140;
+              let minDy = -90;
+              let maxDy = 90;
+
+              if (mobile) {
+                const wsRect = workspaceRef.current?.getBoundingClientRect();
+                const winRect = e.currentTarget.parentElement?.getBoundingClientRect();
+                if (wsRect && winRect) {
+                  const pad = 4;
+                  const maxAbsDx = Math.max(0, Math.floor((wsRect.width - winRect.width) / 2 - pad));
+                  const maxAbsDy = Math.max(0, Math.floor((wsRect.height - winRect.height) / 2 - pad));
+                  minDx = -maxAbsDx;
+                  maxDx = maxAbsDx;
+                  minDy = -maxAbsDy;
+                  maxDy = maxAbsDy;
+                }
+              }
+
+              try {
+                e.currentTarget.setPointerCapture(e.pointerId);
+              } catch {
+                // Ignore pointer capture errors on synthetic events
+              }
+
               dragStateRef.current = {
                 id: win.id,
+                pointerId: e.pointerId,
+                isMobile: mobile,
                 startX: e.clientX,
                 startY: e.clientY,
                 origDxPx: win.dxPx,
                 origDyPx: win.dyPx,
+                minDx,
+                maxDx,
+                minDy,
+                maxDy,
               };
             }}
             className={`flex items-center justify-between ${
               mobile ? 'px-2 py-1.5' : 'px-1.5 py-[2.5px]'
-            } shrink-0 select-none ${
+            } ${mobile && !isFullBox ? 'touch-none' : ''} shrink-0 select-none ${
               isFocused
                 ? 'bg-gradient-to-r from-[#000080] to-[#1084d0] text-white'
                 : 'bg-[#808080] text-[#dfdfdf]'
@@ -1732,13 +1777,27 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   ))}
                 </div>
 
-                <p
-                  className={`${
-                    mobile ? 'text-[13.5px] leading-[1.4]' : 'text-[13px] leading-[1.34]'
-                  } text-[#000000]`}
-                >
-                  {processSteps[processIdx].description}
-                </p>
+                {mobile ? (
+                  <div className="grid">
+                    {processSteps.map((s, idx) => (
+                      <p
+                        key={s.number}
+                        aria-hidden={idx !== processIdx}
+                        className={`col-start-1 row-start-1 text-[13.5px] leading-[1.4] text-[#000000] ${
+                          idx === processIdx
+                            ? ''
+                            : 'invisible pointer-events-none select-none'
+                        }`}
+                      >
+                        {s.description}
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[13px] leading-[1.34] text-[#000000]">
+                    {processSteps[processIdx].description}
+                  </p>
+                )}
 
                 <label
                   className={`flex items-center gap-2 ${
@@ -1755,17 +1814,13 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 </label>
               </div>
 
-              <div
-                className={`flex items-center justify-end ${
-                  mobile ? 'flex-wrap' : ''
-                } gap-1.5 pt-2 shrink-0`}
-              >
+              <div className="flex items-center justify-end gap-1.5 pt-2 shrink-0">
                 {processIdx > 0 && (
                   <button
                     onClick={() => setProcessIdx((p) => Math.max(0, p - 1))}
                     className={`win98-btn ${
                       mobile
-                        ? 'h-[36px] min-w-[84px] px-3.5 text-[13px]'
+                        ? 'h-[36px] min-w-[74px] px-2.5 text-[13px] whitespace-nowrap'
                         : 'px-3 py-1 text-[12.5px]'
                     }`}
                   >
@@ -1779,7 +1834,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     }
                     className={`win98-btn ${
                       mobile
-                        ? 'h-[36px] min-w-[84px] px-3.5 text-[13px]'
+                        ? 'h-[36px] min-w-[74px] px-2.5 text-[13px] whitespace-nowrap'
                         : 'px-3 py-1 text-[12.5px]'
                     }`}
                   >
@@ -1792,7 +1847,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   rel="noopener noreferrer"
                   className={`win98-btn win98-btn-default ${
                     mobile
-                      ? 'h-[36px] min-w-[104px] px-4 text-[13px]'
+                      ? 'h-[36px] min-w-[92px] px-3 text-[13px] whitespace-nowrap'
                       : 'px-3.5 py-1 text-[12.5px]'
                   } font-bold no-underline`}
                 >
