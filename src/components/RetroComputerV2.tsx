@@ -19,7 +19,6 @@ import {
   TraySpeakerIcon,
   PixelSmileyIcon,
   PixelMineIcon,
-  PixelSettingsIcon,
   PixelShutdownIcon,
   PixelMinesweeperMenuIcon,
   PixelTelegramIcon,
@@ -46,8 +45,6 @@ const ADVANTAGE_ICONS = [
   PixelAdvAiIcon,
 ];
 
-type WallpaperMode = 'halftone' | 'matrix' | 'win98' | 'original';
-type DisplayTab = 'background' | 'screensaver' | 'appearance' | 'settings';
 type WindowId =
   | 'about'
   | 'cases'
@@ -55,7 +52,6 @@ type WindowId =
   | 'process'
   | 'contacts'
   | 'trash'
-  | 'display'
   | 'minesweeper'
   | 'shutdown';
 
@@ -63,7 +59,7 @@ interface WinState {
   id: WindowId;
   title: string;
   iconSrc?: string;
-  iconType?: 'flag' | 'settings' | 'shutdown' | 'minesweeper';
+  iconType?: 'flag' | 'shutdown' | 'minesweeper';
   isOpen: boolean;
   isMinimized: boolean;
   isMaximized: boolean;
@@ -154,17 +150,6 @@ const INITIAL_WINDOWS: Record<WindowId, WinState> = {
     isMinimized: false,
     isMaximized: false,
     zIndex: 16,
-    dxPx: 0,
-    dyPx: 0,
-  },
-  display: {
-    id: 'display',
-    title: 'Свойства: Экран',
-    iconType: 'settings',
-    isOpen: false,
-    isMinimized: false,
-    isMaximized: false,
-    zIndex: 17,
     dxPx: 0,
     dyPx: 0,
   },
@@ -343,13 +328,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
   const [startOpen, setStartOpen] = useState(false);
   const [startSubmenu, setStartSubmenu] = useState<'programs' | 'documents' | null>(null);
 
-  const [wallpaperMode, setWallpaperMode] = useState<WallpaperMode>('halftone');
-  const [pendingWallpaperMode, setPendingWallpaperMode] = useState<WallpaperMode>('halftone');
-  const [displayTab, setDisplayTab] = useState<DisplayTab>('background');
-  const [wallpaperDisplayFit, setWallpaperDisplayFit] = useState<'Растянуть' | 'По центру'>(
-    'Растянуть'
-  );
-
   const [powerOn, setPowerOn] = useState(true);
   const [shuttingDown, setShuttingDown] = useState(false);
   const [turningOn, setTurningOn] = useState(false);
@@ -372,7 +350,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
   const [mineTimer, setMineTimer] = useState(0);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const miniPreviewCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const screenContainerRef = useRef<HTMLDivElement | null>(null);
   const workspaceRef = useRef<HTMLDivElement | null>(null);
   const dustCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -832,7 +809,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
 
   const renderPhotoToCanvas = (
     canvas: HTMLCanvasElement | null,
-    mode: WallpaperMode,
     widthPx: number,
     aspectRatio = 4 / 3,
     xBias = 0.5
@@ -846,7 +822,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
       const h = Math.round(w / aspectRatio);
       canvas.width = w;
       canvas.height = h;
-      canvas.dataset.renderedMode = `${mode}-${aspectRatio.toFixed(2)}`;
+      canvas.dataset.renderedMode = `halftone-${aspectRatio.toFixed(2)}`;
 
       const imgRatio = img.width / img.height;
       const targetRatio = w / h;
@@ -864,8 +840,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
       }
 
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
-
-      if (mode === 'original') return;
 
       const imgData = ctx.getImageData(0, 0, w, h);
       const data = imgData.data;
@@ -886,27 +860,12 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
           const lum = 0.299 * r + 0.587 * g + 0.114 * b;
           const threshold = (bayer[y % 4][x % 4] / 16 - 0.5) * 38;
 
-          if (mode === 'matrix') {
-            const v = Math.max(0, Math.min(255, lum + threshold));
-            const quantized = Math.round(v / 36) * 36;
-            data[i] = Math.round(quantized * 0.15);
-            data[i + 1] = Math.min(255, Math.round(quantized * 0.92 + 20));
-            data[i + 2] = Math.round(quantized * 0.28);
-          } else if (mode === 'win98') {
-            const dr = Math.max(0, Math.min(255, r + threshold));
-            const dg = Math.max(0, Math.min(255, g + threshold));
-            const db = Math.max(0, Math.min(255, b + threshold));
-            data[i] = Math.round(dr / 42) * 42;
-            data[i + 1] = Math.round(dg / 42) * 42;
-            data[i + 2] = Math.round(db / 42) * 42;
-          } else if (mode === 'halftone') {
-            const dr = Math.max(0, Math.min(255, r + threshold * 0.55));
-            const dg = Math.max(0, Math.min(255, g + threshold * 0.55));
-            const db = Math.max(0, Math.min(255, b + threshold * 0.55));
-            data[i] = Math.round((dr * 0.74 + lum * 0.12) / 12) * 12;
-            data[i + 1] = Math.min(255, Math.round((dg * 0.86 + lum * 0.2 + 10) / 12) * 12);
-            data[i + 2] = Math.round((db * 0.78 + lum * 0.16 + 8) / 12) * 12;
-          }
+          const dr = Math.max(0, Math.min(255, r + threshold * 0.55));
+          const dg = Math.max(0, Math.min(255, g + threshold * 0.55));
+          const db = Math.max(0, Math.min(255, b + threshold * 0.55));
+          data[i] = Math.round((dr * 0.74 + lum * 0.12) / 12) * 12;
+          data[i + 1] = Math.min(255, Math.round((dg * 0.86 + lum * 0.2 + 10) / 12) * 12);
+          data[i + 2] = Math.round((db * 0.78 + lum * 0.16 + 8) / 12) * 12;
         }
       }
       ctx.putImageData(imgData, 0, 0);
@@ -915,56 +874,30 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
 
   const getWallpaperRenderParams = () => {
     const aspectRatio = !isMobile ? 4 / 3 : isWideCompact ? 1.18 : 0.68;
-    const xBias = !isMobile ? 0.5 : isWideCompact ? 0.58 : 0.72;
-    const targetW = !isMobile
-      ? wallpaperMode === 'matrix'
-        ? 210
-        : wallpaperMode === 'win98'
-        ? 230
-        : 300
-      : isWideCompact
-      ? wallpaperMode === 'matrix'
-        ? 220
-        : wallpaperMode === 'win98'
-        ? 250
-        : 300
-      : wallpaperMode === 'matrix'
-      ? 190
-      : wallpaperMode === 'win98'
-      ? 210
-      : 270;
+    const xBias = !isMobile ? 0.5 : isWideCompact ? 0.56 : 0.64;
+    const targetW = !isMobile ? 300 : isWideCompact ? 300 : 270;
     return {
       targetW,
       aspectRatio,
       xBias,
-      expectedKey: `${wallpaperMode}-${aspectRatio.toFixed(2)}`,
+      expectedKey: `halftone-${aspectRatio.toFixed(2)}`,
     };
   };
 
   useEffect(() => {
     if (!powerOn) return;
     const { targetW, aspectRatio, xBias } = getWallpaperRenderParams();
-    renderPhotoToCanvas(canvasRef.current, wallpaperMode, targetW, aspectRatio, xBias);
-  }, [wallpaperMode, powerOn, isMobile, isWideCompact]);
+    renderPhotoToCanvas(canvasRef.current, targetW, aspectRatio, xBias);
+  }, [powerOn, isMobile, isWideCompact]);
 
   // Recover blank canvas immediately after Vite HMR, power toggle, or viewport breakpoint switch
   useLayoutEffect(() => {
     const c = canvasRef.current;
     const { targetW, aspectRatio, xBias, expectedKey } = getWallpaperRenderParams();
     if (powerOn && c && (c.width === 0 || c.dataset.renderedMode !== expectedKey)) {
-      renderPhotoToCanvas(c, wallpaperMode, targetW, aspectRatio, xBias);
+      renderPhotoToCanvas(c, targetW, aspectRatio, xBias);
     }
   });
-
-  useEffect(() => {
-    if (
-      windows.display.isOpen &&
-      !windows.display.isMinimized &&
-      displayTab === 'background'
-    ) {
-      renderPhotoToCanvas(miniPreviewCanvasRef.current, pendingWallpaperMode, 96);
-    }
-  }, [windows.display.isOpen, windows.display.isMinimized, displayTab, pendingWallpaperMode]);
 
   useEffect(() => {
     const handlePointerMove = (e: PointerEvent) => {
@@ -1015,10 +948,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
     setTopZ(nextZ);
     setStartOpen(false);
     setStartSubmenu(null);
-    if (id === 'display') {
-      setPendingWallpaperMode(wallpaperMode);
-      setDisplayTab('background');
-    }
     setWindows((prev) => {
       const next = { ...prev };
       (Object.keys(next) as WindowId[]).forEach((k) => {
@@ -1159,7 +1088,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
         />
       );
     }
-    if (win.iconType === 'settings') return <PixelSettingsIcon size={16} />;
     if (win.iconType === 'shutdown') return <PixelShutdownIcon size={16} />;
     if (win.iconType === 'minesweeper') return <PixelMinesweeperMenuIcon size={16} />;
     return <WinFlagIcon size={14} />;
@@ -1207,8 +1135,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
         return mobile ? 'min(90%, 336px)' : '316px';
       case 'contacts':
         return mobile ? 'min(90%, 356px)' : '336px';
-      case 'display':
-        return mobile ? 'min(92%, 364px)' : '340px';
       case 'services':
       case 'process':
         return mobile ? 'min(92%, 416px)' : '404px';
@@ -1239,18 +1165,14 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             left: '50%',
             top: '50%',
             width: getContentWidth(win.id, mobile),
-            maxWidth: mobile
-              ? win.id === 'minesweeper'
-                ? 'calc(100% - 6px)'
-                : 'calc(100% - 16px)'
-              : 'calc(100% - 12px)',
+            maxWidth: mobile ? 'calc(100% - 16px)' : 'calc(100% - 12px)',
             height: 'auto',
             maxHeight: mobile ? 'calc(100% - 24px)' : 'calc(100% - 12px)',
             transform: `translate(calc(-50% + ${win.dxPx}px), calc(-50% + ${win.dyPx}px))`,
           };
 
       const tbBtnClass = mobile
-        ? 'win98-btn w-[44px] h-[44px] shrink-0'
+        ? 'win98-btn w-[32px] h-[30px] shrink-0'
         : 'win98-btn w-[16px] h-[14px]';
 
       return (
@@ -1258,7 +1180,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
           key={win.id}
           onClick={(e) => {
             e.stopPropagation();
-            focusWindow(win.id);
+            if (!isFocused || win.isMinimized) focusWindow(win.id);
           }}
           style={winBoxStyle}
           className="absolute flex flex-col win98-outset p-[4px] overflow-hidden"
@@ -1267,7 +1189,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
           <div
             onPointerDown={(e) => {
               e.stopPropagation();
-              focusWindow(win.id);
+              if (!isFocused || win.isMinimized) focusWindow(win.id);
               if (mobile || isFullBox) return;
               dragStateRef.current = {
                 id: win.id,
@@ -1278,7 +1200,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
               };
             }}
             className={`flex items-center justify-between ${
-              mobile ? 'px-1.5 py-1' : 'px-1.5 py-[2.5px]'
+              mobile ? 'px-2 py-1.5' : 'px-1.5 py-[2.5px]'
             } shrink-0 select-none ${
               isFocused
                 ? 'bg-gradient-to-r from-[#000080] to-[#1084d0] text-white'
@@ -1295,23 +1217,21 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             </div>
 
             <div
-              className={`flex items-center ${mobile ? 'gap-[4px]' : 'gap-[2px]'} shrink-0 ml-1`}
+              className={`flex items-center ${mobile ? 'gap-[6px]' : 'gap-[2px]'} shrink-0 ml-1`}
               onPointerDown={(e) => e.stopPropagation()}
             >
-              {win.id !== 'shutdown' &&
-                win.id !== 'trash' &&
-                win.id !== 'display' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      minimizeWindow(win.id);
-                    }}
-                    className={tbBtnClass}
-                    title="Свернуть"
-                  >
-                    <PixelMinimizeGlyph size={mobile ? 18 : 9} />
-                  </button>
-                )}
+              {win.id !== 'shutdown' && win.id !== 'trash' && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    minimizeWindow(win.id);
+                  }}
+                  className={tbBtnClass}
+                  title="Свернуть"
+                >
+                  <PixelMinimizeGlyph size={mobile ? 14 : 9} />
+                </button>
+              )}
               {mobile &&
                 win.id !== 'shutdown' &&
                 win.id !== 'trash' &&
@@ -1324,10 +1244,10 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     className={tbBtnClass}
                     title={win.isMaximized ? 'Восстановить' : 'Развернуть'}
                   >
-                    <PixelMaximizeGlyph isMaximized={win.isMaximized} size={mobile ? 18 : 9} />
+                    <PixelMaximizeGlyph isMaximized={win.isMaximized} size={mobile ? 14 : 9} />
                   </button>
                 )}
-              {(win.id === 'display' || win.id === 'shutdown') && (
+              {win.id === 'shutdown' && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -1336,7 +1256,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   className={tbBtnClass}
                   title="Справка"
                 >
-                  <PixelHelpGlyph size={mobile ? 18 : 9} />
+                  <PixelHelpGlyph size={mobile ? 14 : 9} />
                 </button>
               )}
               <button
@@ -1347,7 +1267,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 className={mobile ? tbBtnClass : `${tbBtnClass} ml-[1px]`}
                 title="Закрыть"
               >
-                <PixelCloseGlyph size={mobile ? 18 : 9} />
+                <PixelCloseGlyph size={mobile ? 14 : 9} />
               </button>
             </div>
           </div>
@@ -1364,9 +1284,9 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
               <div className={`${bodyGrowClass} overflow-y-auto retro-scrollbar pr-1 space-y-3`}>
                 <div className="flex gap-3 items-start">
                   <img
-                    src="/images/hero-photo.jpg"
+                    src="/images/about-photo.jpg"
                     alt="Мелания Ваниосова"
-                    className="w-[90px] h-[104px] object-cover object-[42%_20%] border border-[#808080] shrink-0"
+                    className="w-[90px] h-[104px] object-cover object-center border border-[#808080] shrink-0"
                   />
                   <div
                     className={`flex-1 min-w-0 space-y-1 ${
@@ -1456,7 +1376,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   rel="noopener noreferrer"
                   className={`win98-btn win98-btn-default ${
                     mobile
-                      ? 'min-h-[44px] min-w-[44px] px-4 text-[13.5px]'
+                      ? 'h-[36px] min-w-[116px] px-5 text-[13.5px]'
                       : 'px-3.5 py-1 text-[12.5px]'
                   } font-bold no-underline`}
                 >
@@ -1482,7 +1402,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     onClick={() => setPreviewCase(null)}
                     className={`win98-btn ${
                       mobile
-                        ? 'min-h-[44px] min-w-[44px] px-4 text-[13.5px]'
+                        ? 'h-[34px] px-3.5 text-[13px]'
                         : 'px-3 py-0.5 text-[12.5px]'
                     } shrink-0`}
                   >
@@ -1587,7 +1507,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                                   e.stopPropagation();
                                   setPreviewCase(project);
                                 }}
-                                className="win98-btn win98-btn-default w-full min-h-[44px] min-w-[44px] px-2 text-[12px] font-bold"
+                                className="win98-btn win98-btn-default w-full h-[34px] px-2 text-[12px] font-bold"
                               >
                                 Открыть макет
                               </button>
@@ -1596,7 +1516,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                                 href={project.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="win98-btn win98-btn-default w-full min-h-[44px] min-w-[44px] px-2 text-[12px] font-bold no-underline"
+                                className="win98-btn win98-btn-default w-full h-[34px] px-2 text-[12px] font-bold no-underline"
                               >
                                 Открыть сайт
                               </a>
@@ -1615,7 +1535,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   rel="noopener noreferrer"
                   className={`win98-btn win98-btn-default ${
                     mobile
-                      ? 'min-h-[44px] min-w-[44px] px-4 text-[13.5px]'
+                      ? 'h-[36px] min-w-[116px] px-5 text-[13.5px]'
                       : 'px-3.5 py-1 text-[12.5px]'
                   } font-bold no-underline`}
                 >
@@ -1632,18 +1552,29 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             <div
               className={`${bodyGrowClass} flex flex-col justify-between p-2.5 overflow-hidden bg-[#c0c0c0] text-[#000000]`}
             >
-              <div className="flex items-center flex-wrap gap-1.5 shrink-0 pb-2">
+              <div
+                className={`${
+                  mobile
+                    ? 'grid grid-cols-6 gap-2 pb-2.5'
+                    : 'flex items-center flex-wrap gap-1.5 pb-2'
+                } shrink-0`}
+              >
                 {['Сайт', 'Лендинг', 'Магазин', 'Брендинг', 'Все цены'].map(
                   (label, idx) => (
                     <button
                       key={label}
+                      type="button"
                       onClick={() => setServicesTab(idx)}
                       className={`win98-btn ${
                         mobile
-                          ? 'min-h-[44px] min-w-[44px] px-3.5 text-[13px]'
+                          ? `${idx < 3 ? 'col-span-2' : 'col-span-3'} h-[34px] px-2 text-[13px]`
                           : 'px-2.5 py-0.5 text-[12px]'
                       } whitespace-nowrap ${
-                        servicesTab === idx ? 'is-pressed font-bold' : ''
+                        servicesTab === idx
+                          ? mobile
+                            ? 'is-pressed text-[#000080] font-bold'
+                            : 'is-pressed font-bold'
+                          : ''
                       }`}
                     >
                       {label}
@@ -1732,7 +1663,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   rel="noopener noreferrer"
                   className={`win98-btn win98-btn-default ${
                     mobile
-                      ? 'min-h-[44px] min-w-[44px] px-4 text-[13.5px]'
+                      ? 'h-[36px] min-w-[116px] px-5 text-[13.5px]'
                       : 'px-4 py-1 text-[12.5px]'
                   } font-bold no-underline`}
                 >
@@ -1782,15 +1713,18 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   })}
                 </div>
 
-                <div className="flex items-center flex-wrap gap-1.5">
+                <div
+                  className={
+                    mobile ? 'grid grid-cols-5 gap-1.5' : 'flex items-center flex-wrap gap-1.5'
+                  }
+                >
                   {processSteps.map((s, idx) => (
                     <button
                       key={s.number}
+                      type="button"
                       onClick={() => setProcessIdx(idx)}
                       className={`win98-btn ${
-                        mobile
-                          ? 'min-h-[44px] min-w-[44px] px-3 text-[13.5px]'
-                          : 'px-2.5 py-0.5 text-[12.5px]'
+                        mobile ? 'h-[34px] text-[13px]' : 'px-2.5 py-0.5 text-[12.5px]'
                       } ${processIdx === idx ? 'is-pressed font-bold' : ''}`}
                     >
                       {s.number}
@@ -1808,14 +1742,14 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
 
                 <label
                   className={`flex items-center gap-2 ${
-                    mobile ? 'min-h-[44px] text-[13.5px]' : 'text-[12.5px]'
+                    mobile ? 'min-h-[38px] text-[13.5px]' : 'text-[12.5px]'
                   } text-[#000000]`}
                 >
                   <input
                     type="checkbox"
                     checked={contractChecked}
                     onChange={(e) => setContractChecked(e.target.checked)}
-                    className={mobile ? 'w-5 h-5 shrink-0' : undefined}
+                    className={mobile ? 'w-4 h-4 shrink-0' : undefined}
                   />
                   <span>Работа по договору и согласованным срокам</span>
                 </label>
@@ -1831,7 +1765,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     onClick={() => setProcessIdx((p) => Math.max(0, p - 1))}
                     className={`win98-btn ${
                       mobile
-                        ? 'min-h-[44px] min-w-[44px] px-3.5 text-[13px]'
+                        ? 'h-[36px] min-w-[84px] px-3.5 text-[13px]'
                         : 'px-3 py-1 text-[12.5px]'
                     }`}
                   >
@@ -1845,7 +1779,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     }
                     className={`win98-btn ${
                       mobile
-                        ? 'min-h-[44px] min-w-[44px] px-3.5 text-[13px]'
+                        ? 'h-[36px] min-w-[84px] px-3.5 text-[13px]'
                         : 'px-3 py-1 text-[12.5px]'
                     }`}
                   >
@@ -1858,7 +1792,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   rel="noopener noreferrer"
                   className={`win98-btn win98-btn-default ${
                     mobile
-                      ? 'min-h-[44px] min-w-[44px] px-4 text-[13px]'
+                      ? 'h-[36px] min-w-[104px] px-4 text-[13px]'
                       : 'px-3.5 py-1 text-[12.5px]'
                   } font-bold no-underline`}
                 >
@@ -1883,7 +1817,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`win98-btn w-full ${
-                      mobile ? 'min-h-[48px] h-[48px] min-w-[44px] px-4' : 'h-[44px] px-3.5'
+                      mobile ? 'h-[44px] px-4' : 'h-[44px] px-3.5'
                     } flex items-center justify-between no-underline`}
                     style={{ justifyContent: 'space-between' }}
                   >
@@ -1934,7 +1868,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   onClick={() => closeWindow('trash')}
                   className={`win98-btn win98-btn-default ${
                     mobile
-                      ? 'min-h-[44px] min-w-[44px] px-4 text-[13.5px]'
+                      ? 'h-[36px] min-w-[84px] px-4 text-[13px]'
                       : 'px-4 py-1 text-[12.5px]'
                   }`}
                 >
@@ -1944,159 +1878,11 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   onClick={() => setTrashEmptied(true)}
                   className={`win98-btn ${
                     mobile
-                      ? 'min-h-[44px] min-w-[44px] px-4 text-[13.5px]'
+                      ? 'h-[36px] min-w-[84px] px-4 text-[13px]'
                       : 'px-3.5 py-1 text-[12.5px]'
                   }`}
                 >
                   Очистить
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ======================================================
-              WINDOW 7: СВОЙСТВА: ЭКРАН
-          ====================================================== */}
-          {win.id === 'display' && (
-            <div
-              className={`${bodyGrowClass} flex flex-col justify-between p-2.5 overflow-hidden bg-[#c0c0c0] text-[#000000]`}
-            >
-              <div className="flex items-center flex-wrap gap-1.5 shrink-0 pb-2">
-                {(
-                  [
-                    { id: 'background', label: 'Фон' },
-                    { id: 'screensaver', label: 'Заставка' },
-                    { id: 'appearance', label: 'Вид' },
-                    { id: 'settings', label: 'Настройки' },
-                  ] as { id: DisplayTab; label: string }[]
-                ).map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => setDisplayTab(t.id)}
-                    className={`win98-btn ${
-                      mobile
-                        ? 'min-h-[44px] min-w-[44px] px-3.5 text-[13px]'
-                        : 'px-2.5 py-0.5 text-[12px]'
-                    } whitespace-nowrap ${displayTab === t.id ? 'is-pressed font-bold' : ''}`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className={`${bodyGrowClass} overflow-y-auto retro-scrollbar pr-0.5`}>
-                {displayTab === 'background' && (
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-center">
-                      <canvas
-                        ref={miniPreviewCanvasRef}
-                        className="w-[104px] h-[58px] object-cover block win98-pixelated bg-[#000000]"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      {(
-                        [
-                          { id: 'halftone', label: 'CRT 2000s (Люминофор)' },
-                          { id: 'matrix', label: 'Зеленые пиксели' },
-                          { id: 'win98', label: 'fifows18 (256)' },
-                          { id: 'original', label: 'Оригинал' },
-                        ] as { id: WallpaperMode; label: string }[]
-                      ).map((mode) => (
-                        <button
-                          key={mode.id}
-                          onClick={() => setPendingWallpaperMode(mode.id)}
-                          className={`win98-btn w-full ${
-                            mobile
-                              ? 'min-h-[44px] min-w-[44px] px-3.5 py-2 text-[13.5px]'
-                              : 'px-2.5 py-1 text-[12.5px]'
-                          } ${pendingWallpaperMode === mode.id ? 'is-pressed font-bold' : ''}`}
-                          style={{ justifyContent: 'space-between' }}
-                        >
-                          <span className="truncate">{mode.label}</span>
-                          {pendingWallpaperMode === mode.id && <span>*</span>}
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-0.5">
-                      <button
-                        onClick={() =>
-                          setWallpaperDisplayFit((f) =>
-                            f === 'Растянуть' ? 'По центру' : 'Растянуть'
-                          )
-                        }
-                        className={`win98-btn ${
-                          mobile
-                            ? 'min-h-[44px] min-w-[44px] px-3.5 text-[13px]'
-                            : 'px-2.5 py-1 text-[12px]'
-                        }`}
-                      >
-                        Режим: {wallpaperDisplayFit}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {displayTab === 'screensaver' && (
-                  <p className="text-[13px] leading-[1.34] pt-1 text-[#000000]">
-                    Активный стиль: кинескоп 2000-х со скруглённым стеклом и
-                    естественными бликами без полосок.
-                  </p>
-                )}
-
-                {displayTab === 'appearance' && (
-                  <div className="text-[13px] font-bold pt-1 text-[#000000]">
-                    Тема: fifows18 Классическая
-                  </div>
-                )}
-
-                {displayTab === 'settings' && (
-                  <div className="space-y-2.5 pt-1 text-[13px] text-[#000000]">
-                    <p className="leading-[1.34]">
-                      Переключиться на классическую полноэкранную версию сайта (v1).
-                    </p>
-                    <button
-                      onClick={onSwitchVersion}
-                      className={`win98-btn ${
-                        mobile
-                          ? 'min-h-[44px] min-w-[44px] px-4 text-[13.5px]'
-                          : 'px-3 py-1.5 text-[12.5px]'
-                      } font-bold`}
-                    >
-                      Открыть обычную версию (v1)
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div
-                className={`flex items-center justify-end ${
-                  mobile ? 'flex-wrap' : ''
-                } gap-1.5 pt-2 shrink-0`}
-              >
-                <button
-                  onClick={() => {
-                    setWallpaperMode(pendingWallpaperMode);
-                    closeWindow('display');
-                  }}
-                  className={`win98-btn win98-btn-default ${
-                    mobile
-                      ? 'min-h-[44px] min-w-[56px] px-3.5 text-[13px]'
-                      : 'px-3.5 py-1 text-[12.5px]'
-                  }`}
-                >
-                  OK
-                </button>
-                <button
-                  onClick={() => setWallpaperMode(pendingWallpaperMode)}
-                  className={`win98-btn ${
-                    mobile
-                      ? 'min-h-[44px] min-w-[56px] px-3.5 text-[13px]'
-                      : 'px-3 py-1 text-[12.5px]'
-                  }`}
-                >
-                  Применить
                 </button>
               </div>
             </div>
@@ -2108,12 +1894,12 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
           {win.id === 'minesweeper' && (
             <div
               className={`${bodyGrowClass} flex flex-col items-center justify-between gap-2 ${
-                mobile ? 'p-1 overflow-y-auto overflow-x-hidden' : 'p-2 overflow-hidden'
+                mobile ? 'p-2 overflow-y-auto overflow-x-hidden' : 'p-2 overflow-hidden'
               } bg-[#c0c0c0]`}
             >
               <div
                 className={`w-full ${
-                  mobile ? 'max-w-[352px]' : 'max-w-[176px]'
+                  mobile ? 'max-w-[288px]' : 'max-w-[176px]'
                 } px-1 py-0.5 flex items-center justify-between shrink-0`}
               >
                 <div className="bg-[#000000] text-[#ff0000] font-bold text-[12px] px-1.5 py-0.5 tracking-widest">
@@ -2122,12 +1908,12 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 <button
                   onClick={resetMinesweeper}
                   className={`win98-btn ${
-                    mobile ? 'w-[44px] h-[44px]' : 'w-[24px] h-[24px]'
+                    mobile ? 'w-[36px] h-[36px]' : 'w-[24px] h-[24px]'
                   }`}
                   title="Новая игра"
                 >
                   <PixelSmileyIcon
-                    size={mobile ? 22 : 16}
+                    size={mobile ? 20 : 16}
                     state={
                       mineStatus === 'lost'
                         ? 'dead'
@@ -2149,9 +1935,9 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                       <button
                         key={`${rIdx}-${cIdx}`}
                         onClick={() => revealMineCell(rIdx, cIdx)}
-                        className={`${
+                        className={`win98-mine-cell ${
                           mobile
-                            ? 'w-[44px] h-[44px] text-[15px]'
+                            ? 'w-[36px] h-[36px] text-[14px]'
                             : 'w-[20px] h-[20px] text-[11px]'
                         } font-bold flex items-center justify-center ${
                           cell.isRevealed
@@ -2171,7 +1957,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                       >
                         {cell.isRevealed ? (
                           cell.isMine ? (
-                            <PixelMineIcon size={mobile ? 20 : 14} />
+                            <PixelMineIcon size={mobile ? 18 : 14} />
                           ) : cell.adjacent > 0 ? (
                             cell.adjacent
                           ) : (
@@ -2215,23 +2001,23 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   } text-[#000000]`}
                 >
                   <div className="font-bold">Выберите нужное действие:</div>
-                  <label className={`flex items-center gap-2 ${mobile ? 'min-h-[44px]' : ''}`}>
+                  <label className={`flex items-center gap-2 ${mobile ? 'min-h-[38px]' : ''}`}>
                     <input
                       type="radio"
                       name="shutdown-act"
                       checked={shutdownAction === 'off'}
                       onChange={() => setShutdownAction('off')}
-                      className={mobile ? 'w-5 h-5 shrink-0' : undefined}
+                      className={mobile ? 'w-4 h-4 shrink-0' : undefined}
                     />
                     <span>Выключить экран монитора</span>
                   </label>
-                  <label className={`flex items-center gap-2 ${mobile ? 'min-h-[44px]' : ''}`}>
+                  <label className={`flex items-center gap-2 ${mobile ? 'min-h-[38px]' : ''}`}>
                     <input
                       type="radio"
                       name="shutdown-act"
                       checked={shutdownAction === 'siteV1'}
                       onChange={() => setShutdownAction('siteV1')}
-                      className={mobile ? 'w-5 h-5 shrink-0' : undefined}
+                      className={mobile ? 'w-4 h-4 shrink-0' : undefined}
                     />
                     <span>Обычная версия сайта (v1)</span>
                   </label>
@@ -2263,7 +2049,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   }}
                   className={`win98-btn win98-btn-default ${
                     mobile
-                      ? 'min-h-[44px] min-w-[64px] px-4 text-[13.5px]'
+                      ? 'h-[36px] min-w-[78px] px-4 text-[13px]'
                       : 'px-4 py-1 text-[12.5px]'
                   }`}
                 >
@@ -2273,7 +2059,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   onClick={() => closeWindow('shutdown')}
                   className={`win98-btn ${
                     mobile
-                      ? 'min-h-[44px] min-w-[64px] px-4 text-[13.5px]'
+                      ? 'h-[36px] min-w-[78px] px-4 text-[13px]'
                       : 'px-3.5 py-1 text-[12.5px]'
                   }`}
                 >
@@ -2315,7 +2101,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
               onClick={() =>
                 setStartSubmenu(startSubmenu === 'programs' ? null : 'programs')
               }
-              className={`min-h-[44px] min-w-[44px] shrink-0 px-3 py-2 flex items-center justify-between text-left ${
+              className={`min-h-[40px] shrink-0 px-3 py-1.5 flex items-center justify-between text-left ${
                 startSubmenu === 'programs' ? 'bg-[#000080] text-white' : ''
               }`}
             >
@@ -2334,7 +2120,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
               <div className="bg-[#d4d4d4] border-y border-[#808080]/50 pl-3 flex flex-col text-[13px] shrink-0">
                 <button
                   onClick={() => openWindow('about')}
-                  className="min-h-[44px] min-w-[44px] shrink-0 px-2.5 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+                  className="min-h-[40px] shrink-0 px-2.5 py-1.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
                 >
                   <img
                     src="/images/win98/my-computer.png?v=motif2"
@@ -2345,7 +2131,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 </button>
                 <button
                   onClick={() => openWindow('cases')}
-                  className="min-h-[44px] min-w-[44px] shrink-0 px-2.5 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+                  className="min-h-[40px] shrink-0 px-2.5 py-1.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
                 >
                   <img
                     src="/images/win98/folder.png?v=motif2"
@@ -2356,7 +2142,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 </button>
                 <button
                   onClick={() => openWindow('services')}
-                  className="min-h-[44px] min-w-[44px] shrink-0 px-2.5 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+                  className="min-h-[40px] shrink-0 px-2.5 py-1.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
                 >
                   <img
                     src="/images/win98/motif/services-main.png"
@@ -2367,7 +2153,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 </button>
                 <button
                   onClick={() => openWindow('process')}
-                  className="min-h-[44px] min-w-[44px] shrink-0 px-2.5 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+                  className="min-h-[40px] shrink-0 px-2.5 py-1.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
                 >
                   <img
                     src="/images/win98/motif/process-main.png"
@@ -2378,7 +2164,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 </button>
                 <button
                   onClick={() => openWindow('minesweeper')}
-                  className="min-h-[44px] min-w-[44px] shrink-0 px-2.5 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+                  className="min-h-[40px] shrink-0 px-2.5 py-1.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
                 >
                   <PixelMinesweeperMenuIcon size={16} />
                   <span className="truncate">Игры: Сапёр</span>
@@ -2390,7 +2176,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
               onClick={() =>
                 setStartSubmenu(startSubmenu === 'documents' ? null : 'documents')
               }
-              className={`min-h-[44px] min-w-[44px] shrink-0 px-3 py-2 flex items-center justify-between text-left ${
+              className={`min-h-[40px] shrink-0 px-3 py-1.5 flex items-center justify-between text-left ${
                 startSubmenu === 'documents' ? 'bg-[#000080] text-white' : ''
               }`}
             >
@@ -2418,7 +2204,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                       }
                       openWindow('cases');
                     }}
-                    className="min-h-[44px] min-w-[44px] shrink-0 px-2.5 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+                    className="min-h-[40px] shrink-0 px-2.5 py-1.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
                   >
                     <img
                       src="/images/win98/folder.png?v=motif2"
@@ -2432,16 +2218,8 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             )}
 
             <button
-              onClick={() => openWindow('display')}
-              className="min-h-[44px] min-w-[44px] shrink-0 px-3 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
-            >
-              <PixelSettingsIcon size={16} />
-              <span className="truncate">Экран</span>
-            </button>
-
-            <button
               onClick={() => openWindow('contacts')}
-              className="min-h-[44px] min-w-[44px] shrink-0 px-3 py-2 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+              className="min-h-[40px] shrink-0 px-3 py-1.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
             >
               <img
                 src="/images/win98/internet-globe.png?v=motif2"
@@ -2453,7 +2231,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
 
             <button
               onClick={() => openWindow('shutdown')}
-              className="min-h-[44px] min-w-[44px] shrink-0 px-3 py-2 mt-0.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
+              className="min-h-[40px] shrink-0 px-3 py-1.5 mt-0.5 flex items-center gap-2 text-left active:bg-[#000080] active:text-white"
             >
               <PixelShutdownIcon size={16} />
               <span className="truncate">Выход...</span>
@@ -2527,15 +2305,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                 <span className="truncate">Документы</span>
               </span>
               <PixelArrowRightGlyph active={startSubmenu === 'documents'} />
-            </button>
-
-            <button
-              onMouseEnter={() => setStartSubmenu(null)}
-              onClick={() => openWindow('display')}
-              className="px-2 py-1 flex items-center gap-1.5 text-left hover:bg-[#000080] hover:text-white"
-            >
-              <PixelSettingsIcon size={16} />
-              <span className="truncate">Экран</span>
             </button>
 
             <button
@@ -2711,14 +2480,9 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   ref={canvasRef}
                   className="absolute inset-0 z-0 w-full h-full pointer-events-none win98-pixelated"
                   style={{
-                    objectFit: wallpaperDisplayFit === 'Растянуть' ? 'cover' : 'contain',
+                    objectFit: 'cover',
                     objectPosition: '50% 48%',
-                    filter:
-                      wallpaperMode === 'matrix'
-                        ? 'contrast(1.12) brightness(0.94)'
-                        : wallpaperMode === 'halftone'
-                        ? 'contrast(1.06) brightness(0.95) saturate(0.9)'
-                        : 'contrast(1.04)',
+                    filter: 'contrast(1.06) brightness(0.95) saturate(0.9)',
                   }}
                 />
 
@@ -2728,9 +2492,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   className="absolute inset-0 z-[2] pointer-events-none"
                   style={{
                     background:
-                      wallpaperMode === 'matrix'
-                        ? 'radial-gradient(circle at 50% 42%, rgba(10, 42, 20, 0.12) 0%, rgba(4, 16, 8, 0.36) 100%)'
-                        : 'radial-gradient(circle at 50% 42%, rgba(16, 40, 34, 0.04) 0%, rgba(6, 16, 14, 0.22) 100%)',
+                      'radial-gradient(circle at 50% 42%, rgba(16, 40, 34, 0.04) 0%, rgba(6, 16, 14, 0.22) 100%)',
                   }}
                 />
 
@@ -2754,7 +2516,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     <div
                       className="font-bold text-[32px] min-[380px]:text-[38px] tracking-tight uppercase leading-[0.98]"
                       style={{
-                        color: wallpaperMode === 'matrix' ? '#bbf7d0' : '#0b1020',
+                        color: '#0b1020',
                       }}
                     >
                       <div>МЕЛАНИЯ</div>
@@ -2765,62 +2527,74 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                     </div>
                   </div>
 
-                  {/* Top-Right Section Folders + Recycle Bin */}
+                  {/* Subtle bottom gradient scrim for high-contrast desktop icons & CTA over grass */}
                   <div
-                    className="absolute right-[12px] z-[6] flex flex-col gap-1.5 w-[78px]"
-                    style={{ top: 'max(14px, env(safe-area-inset-top))' }}
-                  >
-                    {COMPACT_DESKTOP_ICONS.map((item) => {
-                      const isActive =
-                        selectedIcon === item.id ||
-                        (windows[item.id].isOpen && !windows[item.id].isMinimized);
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedIcon(item.id);
-                            openWindow(item.id);
-                          }}
-                          className="flex flex-col items-center justify-center py-1 px-1 w-[78px] min-h-[52px] min-w-[44px] text-center focus:outline-none"
-                        >
-                          <img
-                            src={item.iconSrc}
-                            alt={item.label}
-                            draggable={false}
-                            className={`w-[32px] h-[32px] object-contain win98-pixelated ${
-                              isActive ? 'brightness-90' : ''
-                            }`}
-                          />
-                          <span
-                            className={`mt-0.5 px-1 py-[1px] text-[12px] leading-[1.15] text-white break-words ${
-                              isActive ? 'bg-[#000080]' : ''
-                            }`}
-                            style={
-                              isActive
-                                ? undefined
-                                : {
-                                    textShadow:
-                                      '1px 1px 0 #000000, -1px 0 0 #000000, 0 -1px 0 #000000',
-                                  }
-                            }
-                          >
-                            {item.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-[225px] z-[5]"
+                    style={{
+                      background:
+                        'linear-gradient(to top, rgba(5, 18, 9, 0.54) 0%, rgba(5, 18, 9, 0.24) 68%, rgba(5, 18, 9, 0) 100%)',
+                    }}
+                  />
 
-                  {/* Matte-Orange CTA directly on desktop wallpaper */}
-                  <div className="absolute inset-x-0 bottom-[22px] z-[7] flex justify-center pointer-events-none px-4">
+                  {/* Bottom Horizontal Icon Dock + Matte-Orange CTA directly on desktop wallpaper */}
+                  <div className="absolute inset-x-0 bottom-[16px] z-[7] flex flex-col items-center gap-3 px-3 pointer-events-none">
+                    <div
+                      className={`pointer-events-auto w-full ${
+                        isWideCompact
+                          ? 'max-w-[520px] grid grid-cols-6 gap-1.5'
+                          : 'max-w-[356px] grid grid-cols-3 gap-x-2 gap-y-1.5'
+                      }`}
+                    >
+                      {COMPACT_DESKTOP_ICONS.map((item) => {
+                        const isActive =
+                          selectedIcon === item.id ||
+                          (windows[item.id].isOpen && !windows[item.id].isMinimized);
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedIcon(item.id);
+                              openWindow(item.id);
+                            }}
+                            className="flex flex-col items-center justify-center py-1 px-1 min-h-[52px] text-center focus:outline-none"
+                          >
+                            <img
+                              src={item.iconSrc}
+                              alt={item.label}
+                              draggable={false}
+                              className={`w-[32px] h-[32px] object-contain win98-pixelated drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)] ${
+                                isActive ? 'brightness-90' : ''
+                              }`}
+                            />
+                            <span
+                              className={`mt-1 px-1.5 py-[1px] text-[12px] font-bold leading-[1.15] text-white whitespace-nowrap ${
+                                isActive ? 'bg-[#000080]' : 'bg-[#07160c]/65'
+                              }`}
+                              style={
+                                isActive
+                                  ? undefined
+                                  : {
+                                      textShadow: '0 1px 1px rgba(0,0,0,0.9)',
+                                    }
+                              }
+                            >
+                              {item.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
                     <a
                       data-click-sound="hardware"
                       href={footerContent.telegramLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="win98-cta-orange pointer-events-auto px-7 min-h-[46px] h-[46px] min-w-[220px] text-[13.5px] tracking-[0.04em] uppercase no-underline"
+                      className="win98-cta-orange pointer-events-auto px-7 h-[44px] min-w-[220px] text-[13.5px] tracking-[0.04em] uppercase no-underline"
                     >
                       ЗАКАЗАТЬ САЙТ
                     </a>
@@ -2855,11 +2629,11 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   setStartOpen(!startOpen);
                   setStartSubmenu(null);
                 }}
-                className={`win98-btn h-[44px] min-h-[44px] min-w-[44px] px-3 gap-1.5 font-bold text-[13.5px] shrink-0 ${
+                className={`win98-btn h-[32px] px-3 gap-1.5 font-bold text-[13px] shrink-0 ${
                   startOpen ? 'is-pressed' : ''
                 }`}
               >
-                <WinFlagIcon size={16} />
+                <WinFlagIcon size={15} />
                 <span>Пуск</span>
               </button>
 
@@ -2873,7 +2647,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                       minimizeWindow(singleOpenWindow.id);
                     }
                   }}
-                  className={`h-[44px] min-h-[44px] min-w-[44px] px-2.5 flex-1 max-w-[200px] flex items-center gap-1.5 truncate text-[13px] text-left ${
+                  className={`h-[32px] px-2.5 flex-1 min-w-0 max-w-[200px] flex items-center gap-1.5 truncate text-[12.5px] text-left ${
                     !singleOpenWindow.isMinimized
                       ? 'win98-task-active font-bold'
                       : 'win98-btn font-normal'
@@ -2885,15 +2659,10 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
               )}
             </div>
 
-            <button
-              type="button"
-              onClick={() => openWindow('display')}
-              title="Свойства экрана и обоев"
-              className="win98-btn h-[44px] min-h-[44px] min-w-[44px] px-2.5 flex items-center gap-1.5 shrink-0 text-[13px] text-black"
-            >
-              <TraySpeakerIcon size={16} />
+            <div className="win98-status-cell h-[32px] px-2.5 flex items-center gap-1.5 shrink-0 text-[12.5px] text-black select-none">
+              <TraySpeakerIcon size={14} />
               <span>{clock}</span>
-            </button>
+            </div>
           </footer>
         </>
       ) : (
@@ -3035,10 +2804,6 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             }
             setSelectedIcon(null);
           }}
-          onContextMenu={(e) => {
-            e.preventDefault();
-            openWindow('display');
-          }}
         >
           <div
             style={{
@@ -3083,13 +2848,8 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   ref={canvasRef}
                   className="absolute inset-0 z-0 w-full h-full pointer-events-none win98-pixelated"
                   style={{
-                    objectFit: wallpaperDisplayFit === 'Растянуть' ? 'cover' : 'contain',
-                    filter:
-                      wallpaperMode === 'matrix'
-                        ? 'contrast(1.12) brightness(0.94)'
-                        : wallpaperMode === 'halftone'
-                        ? 'contrast(1.06) brightness(0.95) saturate(0.9)'
-                        : 'contrast(1.04)',
+                    objectFit: 'cover',
+                    filter: 'contrast(1.06) brightness(0.95) saturate(0.9)',
                   }}
                 />
 
@@ -3098,9 +2858,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   className="absolute inset-0 z-[2] pointer-events-none"
                   style={{
                     background:
-                      wallpaperMode === 'matrix'
-                        ? 'radial-gradient(circle at 50% 45%, rgba(10, 42, 20, 0.14) 0%, rgba(4, 16, 8, 0.44) 100%)'
-                        : 'radial-gradient(circle at 50% 45%, rgba(16, 40, 34, 0.05) 0%, rgba(6, 16, 14, 0.28) 100%)',
+                      'radial-gradient(circle at 50% 45%, rgba(16, 40, 34, 0.05) 0%, rgba(6, 16, 14, 0.28) 100%)',
                   }}
                 />
 
@@ -3117,7 +2875,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                       <div
                         className="font-bold text-[40px] tracking-tight uppercase leading-[0.98]"
                         style={{
-                          color: wallpaperMode === 'matrix' ? '#bbf7d0' : '#0b1020',
+                          color: '#0b1020',
                         }}
                       >
                         <div>МЕЛАНИЯ</div>
@@ -3146,13 +2904,15 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                               src={item.iconSrc}
                               alt={item.label}
                               draggable={false}
-                              className={`w-[32px] h-[32px] object-contain win98-pixelated transition-transform duration-75 group-hover:brightness-110 group-hover:-translate-y-[1px] ${
+                              className={`w-[32px] h-[32px] object-contain win98-pixelated drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)] transition-transform duration-75 group-hover:brightness-110 group-hover:-translate-y-[1px] ${
                                 isSelected ? 'brightness-90' : ''
                               }`}
                             />
                             <span
                               className={`mt-0.5 px-1 py-[1px] text-[12px] leading-[1.15] text-white break-words transition-colors duration-75 ${
-                                isSelected ? 'bg-[#000080]' : 'group-hover:bg-[#000080]/80'
+                                isSelected
+                                  ? 'bg-[#000080]'
+                                  : 'bg-[#07160c]/45 group-hover:bg-[#000080]/80'
                               }`}
                               style={
                                 isSelected
@@ -3219,14 +2979,10 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                       )}
                     </div>
 
-                    <button
-                      onClick={() => openWindow('display')}
-                      title="Свойства экрана и обоев"
-                      className="win98-btn h-[19px] px-1.5 flex items-center gap-1 shrink-0 text-[11.5px] text-black"
-                    >
+                    <div className="win98-status-cell h-[19px] px-1.5 flex items-center gap-1 shrink-0 text-[11.5px] text-black select-none">
                       <TraySpeakerIcon size={14} />
                       <span>{clock}</span>
-                    </button>
+                    </div>
                   </div>
                 </div>
 
@@ -3504,7 +3260,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             aria-label="Закрыть"
             title="Закрыть"
             className={`win98-btn absolute top-4 right-4 z-10 ${
-              isMobile ? 'w-[44px] h-[44px]' : 'w-[32px] h-[32px]'
+              isMobile ? 'w-[36px] h-[36px]' : 'w-[32px] h-[32px]'
             }`}
           >
             <PixelCloseGlyph size={isMobile ? 18 : 14} />

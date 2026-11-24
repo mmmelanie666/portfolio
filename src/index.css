@@ -287,6 +287,12 @@ body,
   cursor: url('/images/win98/cursor-pointer.png') 6 1, pointer;
 }
 
+.win98-root button,
+.win98-root a {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .win98-pixelated {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
@@ -352,8 +358,6 @@ body,
     inset 1px 1px 0 #000000,
     inset -2px -2px 0 #dfdfdf,
     inset 2px 2px 0 #808080;
-  padding-top: 1px;
-  padding-left: 1px;
 }
 
 .win98-cta-orange {
@@ -418,8 +422,6 @@ body,
     inset 1px 1px 0 #000000,
     inset -2px -2px 0 #dfdfdf,
     inset 2px 2px 0 #808080;
-  padding-top: 1px;
-  padding-left: 1px;
 }
 
 .win98-groupbox {
@@ -718,12 +720,28 @@ body,
   }
 }
 
-@media (max-width: 1031px) {
-  .win98-root button,
-  .win98-root .win98-btn,
-  .win98-root .win98-cta-orange,
-  .win98-root .win98-task-active {
-    min-width: 44px;
-    min-height: 44px;
+@layer components {
+  @media (max-width: 1031px) {
+    .win98-root button:not(.win98-mine-cell),
+    .win98-root .win98-btn:not(.win98-mine-cell),
+    .win98-root .win98-task-active {
+      position: relative;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .win98-root button:not(.win98-mine-cell)::before,
+    .win98-root .win98-btn:not(.win98-mine-cell)::before,
+    .win98-root .win98-task-active::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 44px;
+      min-height: 44px;
+      width: 100%;
+      height: 100%;
+    }
   }
 }
