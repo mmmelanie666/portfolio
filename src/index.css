@@ -714,24 +714,40 @@ body,
   height: 100dvh;
 }
 
+@keyframes nokiaLcdBar {
+  0%, 100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.nokia-lcd-bar {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: nokiaLcdBar 0.65s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .lamp-bulb-flicker {
+  .lamp-bulb-flicker,
+  .nokia-lcd-bar {
     animation: none;
   }
 }
 
 @layer components {
   @media (max-width: 1031px) {
-    .win98-root button:not(.win98-mine-cell),
-    .win98-root .win98-btn:not(.win98-mine-cell),
+    .win98-root button:not(.win98-mine-cell):not(.win98-keychain-btn),
+    .win98-root .win98-btn:not(.win98-mine-cell):not(.win98-keychain-btn),
     .win98-root .win98-task-active {
       position: relative;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .win98-root button:not(.win98-mine-cell)::before,
-    .win98-root .win98-btn:not(.win98-mine-cell)::before,
+    .win98-root button:not(.win98-mine-cell):not(.win98-keychain-btn)::before,
+    .win98-root .win98-btn:not(.win98-mine-cell):not(.win98-keychain-btn)::before,
     .win98-root .win98-task-active::before {
       content: "";
       position: absolute;

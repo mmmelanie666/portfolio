@@ -354,6 +354,8 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
   const workspaceRef = useRef<HTMLDivElement | null>(null);
   const dustCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const fishbowlVideoRef = useRef<HTMLVideoElement | null>(null);
+  const nokiaAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [isNokiaPlaying, setIsNokiaPlaying] = useState(false);
   const sceneContainerRef = useRef<HTMLDivElement | null>(null);
   const turnOnTimerRef = useRef<number | null>(null);
   const shutdownTimerRef = useRef<number | null>(null);
@@ -375,6 +377,11 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
       ? window.innerWidth < 1032 && window.innerWidth / Math.max(1, window.innerHeight) > 0.92
       : false
   );
+  const [mobileViewportAspect, setMobileViewportAspect] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0.52;
+    const raw = window.innerWidth / Math.max(1, window.innerHeight - 44);
+    return Math.max(0.35, Math.min(2.5, Math.round(raw * 50) / 50));
+  });
 
   useEffect(() => {
     const updateCompactLayout = () => {
@@ -398,6 +405,65 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
       window.removeEventListener('resize', updateCompactLayout);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isMobile || !powerOn) return;
+    const target = workspaceRef.current ?? canvasRef.current?.parentElement;
+    if (!target) return;
+
+    const updateAspect = () => {
+      const rect = target.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const raw = rect.width / Math.max(1, rect.height);
+      const quantized = Math.max(0.35, Math.min(2.5, Math.round(raw * 50) / 50));
+      setMobileViewportAspect((prev) => (prev === quantized ? prev : quantized));
+    };
+
+    updateAspect();
+    const ro = new ResizeObserver(updateAspect);
+    ro.observe(target);
+    return () => ro.disconnect();
+  }, [isMobile, powerOn]);
+
+  useEffect(() => {
+    return () => {
+      const audio = nokiaAudioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+        nokiaAudioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleNokiaCall = () => {
+    let audio = nokiaAudioRef.current;
+    if (!audio) {
+      audio = new Audio('/sounds/nokia-call.mp3');
+      audio.preload = 'none';
+      audio.volume = 0.9;
+      audio.addEventListener('ended', () => setIsNokiaPlaying(false));
+      audio.addEventListener('pause', () => {
+        if (audio && audio.paused) {
+          setIsNokiaPlaying(false);
+        }
+      });
+      nokiaAudioRef.current = audio;
+    }
+
+    if (!audio.paused && !audio.ended) {
+      audio.pause();
+      audio.currentTime = 0;
+      setIsNokiaPlaying(false);
+      return;
+    }
+
+    audio.currentTime = 0;
+    setIsNokiaPlaying(true);
+    void audio.play().catch(() => {
+      setIsNokiaPlaying(false);
+    });
+  };
 
   const powerOnMonitor = () => {
     if (shutdownTimerRef.current !== null) {
@@ -459,7 +525,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
       ...PROCESS_STEP_ICONS,
     ];
     const assets = mobileBoot
-      ? ['/images/desktop-wallpaper-dog.jpg', ...coreMotifIcons]
+      ? ['/images/desktop-wallpaper-dog.jpg', '/images/nokia-keychain.png', ...coreMotifIcons]
       : [
           monitorOnlyBoot ? '/images/hero-room-v17.jpg' : '/images/hero-room-v16.jpg',
           '/images/desktop-wallpaper-dog.jpg',
@@ -817,7 +883,9 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
     canvas: HTMLCanvasElement | null,
     widthPx: number,
     aspectRatio = 4 / 3,
-    xBias = 0.5
+    xBias = 0.5,
+    rightAnchorRatio?: number,
+    modeKey?: string
   ) => {
     if (!canvas) return;
     loadDesktopWallpaper((img) => {
@@ -828,7 +896,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
       const h = Math.round(w / aspectRatio);
       canvas.width = w;
       canvas.height = h;
-      canvas.dataset.renderedMode = `halftone-${aspectRatio.toFixed(2)}`;
+      canvas.dataset.renderedMode = modeKey ?? `halftone-${aspectRatio.toFixed(2)}`;
 
       const imgRatio = img.width / img.height;
       const targetRatio = w / h;
@@ -839,7 +907,11 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
 
       if (imgRatio > targetRatio) {
         sw = img.height * targetRatio;
-        sx = (img.width - sw) * xBias;
+        if (rightAnchorRatio !== undefined) {
+          sx = Math.max(0, Math.min(img.width - sw, img.width * rightAnchorRatio - sw));
+        } else {
+          sx = (img.width - sw) * xBias;
+        }
       } else {
         sh = img.width / targetRatio;
         sy = (img.height - sh) * 0.27;
@@ -879,29 +951,41 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
   };
 
   const getWallpaperRenderParams = () => {
-    const aspectRatio = !isMobile ? 4 / 3 : isWideCompact ? 1.18 : 0.68;
-    const xBias = !isMobile ? 0.5 : isWideCompact ? 0.56 : 0.64;
+    const aspectRatio = !isMobile ? 4 / 3 : mobileViewportAspect;
+    const isPortraitMobile = isMobile && aspectRatio < 0.92;
+    const xBias = !isMobile ? 0.5 : 0.62;
+    const rightAnchorRatio = isPortraitMobile ? 0.885 : undefined;
     const targetW = !isMobile ? 300 : isWideCompact ? 300 : 270;
     return {
       targetW,
       aspectRatio,
       xBias,
-      expectedKey: `halftone-${aspectRatio.toFixed(2)}`,
+      rightAnchorRatio,
+      expectedKey: `halftone-${aspectRatio.toFixed(2)}-${isPortraitMobile ? 'r885' : 'c'}`,
     };
   };
 
   useEffect(() => {
     if (!powerOn) return;
-    const { targetW, aspectRatio, xBias } = getWallpaperRenderParams();
-    renderPhotoToCanvas(canvasRef.current, targetW, aspectRatio, xBias);
-  }, [powerOn, isMobile, isWideCompact]);
+    const { targetW, aspectRatio, xBias, rightAnchorRatio, expectedKey } =
+      getWallpaperRenderParams();
+    renderPhotoToCanvas(
+      canvasRef.current,
+      targetW,
+      aspectRatio,
+      xBias,
+      rightAnchorRatio,
+      expectedKey
+    );
+  }, [powerOn, isMobile, isWideCompact, mobileViewportAspect]);
 
   // Recover blank canvas immediately after Vite HMR, power toggle, or viewport breakpoint switch
   useLayoutEffect(() => {
     const c = canvasRef.current;
-    const { targetW, aspectRatio, xBias, expectedKey } = getWallpaperRenderParams();
+    const { targetW, aspectRatio, xBias, rightAnchorRatio, expectedKey } =
+      getWallpaperRenderParams();
     if (powerOn && c && (c.width === 0 || c.dataset.renderedMode !== expectedKey)) {
-      renderPhotoToCanvas(c, targetW, aspectRatio, xBias);
+      renderPhotoToCanvas(c, targetW, aspectRatio, xBias, rightAnchorRatio, expectedKey);
     }
   });
 
@@ -2536,7 +2620,7 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                   className="absolute inset-0 z-0 w-full h-full pointer-events-none win98-pixelated"
                   style={{
                     objectFit: 'cover',
-                    objectPosition: '50% 48%',
+                    objectPosition: '50% 50%',
                     filter: 'contrast(1.06) brightness(0.95) saturate(0.9)',
                   }}
                 />
@@ -2581,6 +2665,116 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
                       дизайнер сайтов
                     </div>
                   </div>
+
+                  {/* Hanging Nokia 3310 Keychain — Top-Right Corner Call Easter Egg */}
+                  <button
+                    type="button"
+                    data-click-sound="hardware"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleNokiaCall();
+                    }}
+                    aria-pressed={isNokiaPlaying}
+                    aria-label={
+                      isNokiaPlaying
+                        ? 'Брелок Nokia 3310 — идёт звонок, нажмите чтобы сбросить'
+                        : 'Брелок Nokia 3310 — позвонить'
+                    }
+                    title={isNokiaPlaying ? 'Сбросить звонок' : 'Позвонить'}
+                    className="win98-keychain-btn absolute z-[8] p-0 border-0 bg-transparent focus:outline-none select-none w-[156px] min-[380px]:w-[166px] overflow-visible"
+                    style={{
+                      top: 'calc(env(safe-area-inset-top, 0px) - 54px)',
+                      right: '-34px',
+                    }}
+                  >
+                    <div
+                      className="p-[20px] pointer-events-none"
+                      style={{
+                        filter:
+                          'drop-shadow(0 5px 8px rgba(4, 18, 28, 0.36)) contrast(1.03) saturate(0.92)',
+                      }}
+                    >
+                      <div className="relative w-full">
+                        <img
+                          src="/images/nokia-keychain.png"
+                          alt="Брелок Nokia 3310"
+                          draggable={false}
+                          className="w-full h-auto block pointer-events-none select-none"
+                        />
+                        {/* Monochrome Nokia 3310 LCD status overlay */}
+                        <div
+                          aria-hidden="true"
+                          className="absolute pointer-events-none overflow-hidden transition-all duration-200"
+                          style={{
+                            left: '16.6%',
+                            top: '53.0%',
+                            width: '19.8%',
+                            height: '10.7%',
+                            transform: 'rotate(3.5deg)',
+                            borderRadius: '2px',
+                            backgroundColor: isNokiaPlaying
+                              ? 'rgba(164, 224, 96, 0.92)'
+                              : 'rgba(138, 162, 108, 0.24)',
+                            boxShadow: isNokiaPlaying
+                              ? '0 0 8px 2px rgba(154, 224, 92, 0.72), inset 0 0 2px rgba(24, 52, 14, 0.35)'
+                              : 'none',
+                          }}
+                        >
+                          {isNokiaPlaying ? (
+                            <svg
+                              viewBox="0 0 24 14"
+                              shapeRendering="crispEdges"
+                              className="w-full h-full block"
+                            >
+                              {/* Classic handset icon */}
+                              <rect x="2" y="6" width="2.5" height="3.5" fill="#13240a" />
+                              <rect x="3.5" y="4.5" width="5" height="2" fill="#13240a" />
+                              <rect x="7.5" y="6" width="2.5" height="3.5" fill="#13240a" />
+                              {/* Animated equalizer sound bars */}
+                              <rect x="13" y="4" width="2" height="7" fill="#13240a" className="nokia-lcd-bar" />
+                              <rect
+                                x="16"
+                                y="2.5"
+                                width="2"
+                                height="8.5"
+                                fill="#13240a"
+                                className="nokia-lcd-bar"
+                                style={{ animationDelay: '0.18s' }}
+                              />
+                              <rect
+                                x="19"
+                                y="5"
+                                width="2"
+                                height="6"
+                                fill="#13240a"
+                                className="nokia-lcd-bar"
+                                style={{ animationDelay: '0.34s' }}
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              viewBox="0 0 24 14"
+                              shapeRendering="crispEdges"
+                              className="w-full h-full block opacity-80"
+                            >
+                              {/* Signal bars */}
+                              <rect x="1.5" y="9" width="1.5" height="2.5" fill="#1c2a14" />
+                              <rect x="3.5" y="7" width="1.5" height="4.5" fill="#1c2a14" />
+                              <rect x="5.5" y="4.5" width="1.5" height="7" fill="#1c2a14" />
+                              {/* Subtle standby handset icon */}
+                              <rect x="9" y="6.5" width="2" height="3" fill="#1c2a14" />
+                              <rect x="10.2" y="5" width="4.6" height="1.8" fill="#1c2a14" />
+                              <rect x="14" y="6.5" width="2" height="3" fill="#1c2a14" />
+                              {/* Battery indicator */}
+                              <rect x="20" y="3.5" width="1.5" height="1" fill="#1c2a14" />
+                              <rect x="18.8" y="4.5" width="3.8" height="7" fill="#1c2a14" fillOpacity="0.25" />
+                              <rect x="19.5" y="6" width="2.4" height="4.8" fill="#1c2a14" />
+                            </svg>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
 
                   {/* Subtle bottom gradient scrim for high-contrast desktop icons & CTA over grass */}
                   <div
@@ -3262,8 +3456,20 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
           data-click-sound="hardware"
           role="button"
           tabIndex={0}
-          aria-label="Nokia 3310 — скорое взаимодействие"
-          title="Nokia 3310"
+          onClick={toggleNokiaCall}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleNokiaCall();
+            }
+          }}
+          aria-pressed={isNokiaPlaying}
+          aria-label={
+            isNokiaPlaying
+              ? 'Nokia 3310 — идёт звонок, нажмите чтобы сбросить'
+              : 'Nokia 3310 — позвонить'
+          }
+          title={isNokiaPlaying ? 'Сбросить звонок' : 'Позвонить на Nokia 3310'}
           style={
             isMonitorOnly
               ? {
@@ -3289,7 +3495,11 @@ export const RetroComputerV2: React.FC<{ onSwitchVersion: () => void }> = ({
             src={isMonitorOnly ? '/images/v17-nokia-hover.png' : '/images/v12-nokia-hover.png'}
             alt=""
             draggable={false}
-            className="w-full h-full object-fill pointer-events-none select-none opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200"
+            className={`w-full h-full object-fill pointer-events-none select-none transition-opacity duration-200 ${
+              isNokiaPlaying
+                ? 'opacity-100 animate-pulse'
+                : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'
+            }`}
           />
         </div>
         </div>

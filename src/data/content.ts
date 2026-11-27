@@ -123,13 +123,6 @@ export const cases: CaseItem[] = [
     link: '#',
   },
   {
-    id: 3,
-    title: 'ВСЁ О PROGRAMMATIC',
-    image: '/cases/case-3.jpg',
-    v2Image: '/cases/v2-case-3.jpg',
-    link: 'https://academy.hybrid.ai/',
-  },
-  {
     id: 1,
     title: 'МАХОВИК ПРОСТРАНСТВА',
     image: '/cases/case-1.jpg?v=3',
